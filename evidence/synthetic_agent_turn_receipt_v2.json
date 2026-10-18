@@ -1,0 +1,38 @@
+{
+  "schema": "xrz.synthetic_agent_turn_reference_receipt.v2",
+  "scope": "SYNTHETIC_ONLY",
+  "source_contract": "contracts/AGENT_TURN.v2.schema.json",
+  "predecessor_receipt": "evidence/synthetic_agent_turn_receipt.json",
+  "predecessor_root": "0fc4c6332e1c1831036193a6d66b235e7b2fc5893908dd49c880a32fb234166c",
+  "agent": "SYNTHETIC_COPILOT",
+  "event_kinds": [
+    "INSTRUCTION_READ",
+    "CODE_EDIT",
+    "TEST_EXECUTION"
+  ],
+  "algorithm": "xrz-domain-separated-mmr-v1",
+  "canonicalization": "xrz-json-v1",
+  "ordered_leaf_hashes": [
+    "f408332a6f4dc470f32868b58d267cc88601da958ac505b4326c15cfe48b02d1",
+    "74ffa7e557170ca504a54a0453a80cfa1a1476ba07308356276fe41ffe63d1d2",
+    "2887544a094f108cc7f7317c607aafb37e88d169714a3bc98e458c10a24a6af8"
+  ],
+  "peaks": [
+    {
+      "height": 1,
+      "hash": "71067c408fbf4628f60de84eba77e381aafada9e0eb471d96a8cefdaaafec2da"
+    },
+    {
+      "height": 0,
+      "hash": "2887544a094f108cc7f7317c607aafb37e88d169714a3bc98e458c10a24a6af8"
+    }
+  ],
+  "root": "d459eb5b1c36a67b8637a4897e6201ae5e8dff7ccd47e03434a792b1968e0049",
+  "parent_checkpoint": "0fc4c6332e1c1831036193a6d66b235e7b2fc5893908dd49c880a32fb234166c",
+  "signature_state": "NOT_SIGNED",
+  "state": "COMPUTED_LOCAL_REFERENCE_NOT_PRODUCTION_COMMITTED",
+  "verification_method": "local dual-algorithm recursive and iterative; two-host attestation NOT_TESTED",
+  "rights": "synthetic fixture created for project",
+  "real_copilot_review": "Actual reviewer separately recorded in GitHub PR #1; these leaves do not depict real Copilot execution",
+  "next_action": "Independently reproduce v2 root from GitHub CI and capture review artifact IDs as real FCOs. Production L2/L3 roots NOT_COMPUTED."
+}

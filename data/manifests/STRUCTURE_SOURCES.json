@@ -1,0 +1,33 @@
+{
+  "schema": "xrz.reference_sources.v1",
+  "state": "REFERENCED_NOT_YET_DOWNLOADED_OR_VERIFIED_IN_XRZ",
+  "source_type": "experimentally determined PDB crystal structures",
+  "license_note": "RCSB PDB coordinate archive CC0; check linked publication and derivative asset rights",
+  "entries": [
+    {
+      "pdb_id": "3HS4",
+      "url": "https://files.rcsb.org/download/3HS4.pdb",
+      "doi": "10.2210/pdb3HS4/pdb",
+      "target": "human carbonic anhydrase II",
+      "ligand_context": "acetazolamide",
+      "source_sha256": null,
+      "bytes": null,
+      "ingest_status": "NOT_EXECUTED"
+    },
+    {
+      "pdb_id": "4IWZ",
+      "url": "https://files.rcsb.org/download/4IWZ.pdb",
+      "doi": "10.2210/pdb4IWZ/pdb",
+      "target": "human carbonic anhydrase II",
+      "ligand_context": "acetazolamide derivative",
+      "source_sha256": null,
+      "bytes": null,
+      "ingest_status": "NOT_EXECUTED"
+    }
+  ],
+  "excluded_target_names": [
+    "HET",
+    "PRNP"
+  ],
+  "next_action": "Download both original PDB files into governed public data store, preserve bytes, calculate and independently verify hashes, create per-atom occurrences and notebook."
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "xrz.github_review_comment_snapshot.v1",
+  "state": "OBSERVED_GITHUB_RESPONSE_NO_SIGNATURE",
+  "repository": "biobitworks/xrz",
+  "pr": 1,
+  "source_url": "https://github.com/biobitworks/xrz/pull/1",
+  "source": "GitHub connector PR comment API",
+  "version": "original eight independent inline comments from Copilot and Codex; keep successor corrections separately",
+  "license_and_rights": "Original public PR comments, provenance storage for audit only; independent content reuse rights not asserted",
+  "comments": [
+    {
+      "id": 4305152547,
+      "author_login": "chatgpt-codex-connector[bot]",
+      "review_id": "5560818457",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152547",
+      "created_at": "2026-10-18T00:39:47Z",
+      "updated_at": "2026-10-18T00:39:47Z",
+      "body": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reject receipt status claims that are not authenticated**\n\nWhen a receipt's `signature_state` is changed to `SIGNED_VERIFIED` or its `state` to `MMR_COMMITTED`, `reference_verify` still returns `True` because it validates neither these fields nor any signature or attestation evidence. A consumer treating this result as verification of the receipt can therefore endorse an unsupported custody claim; reject unsupported status values or validate their corresponding proof separately.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "id": 4305152549,
+      "author_login": "chatgpt-codex-connector[bot]",
+      "review_id": "5560818457",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152549",
+      "created_at": "2026-10-18T00:39:47Z",
+      "updated_at": "2026-10-18T00:39:47Z",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate the complete AgentTurn schema before committing**\n\nWhen a producer supplies an event with an invalid enum, type, hash, or extra field, this presence-only loop accepts it and the resulting receipt passes `reference_verify`; for example, `actor: \"INVALID\"`, `status: \"INVALID\"`, and a string-valued `input_occurrences` are all committed successfully despite violating `contracts/AGENT_TURN.schema.json`. This allows a verified checkpoint to contain events that do not satisfy the advertised contract, so construction or verification should enforce the full schema.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "id": 4305152550,
+      "author_login": "chatgpt-codex-connector[bot]",
+      "review_id": "5560818457",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152550",
+      "created_at": "2026-10-18T00:39:47Z",
+      "updated_at": "2026-10-18T00:39:47Z",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject empty checkpoints during verification**\n\nWhen `events` is empty, a crafted receipt with `event_count: 0`, empty leaves and peaks, and the corresponding empty root passes `reference_verify`, even though `construct_turn_checkpoint` explicitly rejects empty checkpoints. This permits an evidence-free checkpoint that could never be produced by the constructor to be reported as verified; mirror the non-empty invariant in the verifier.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "id": 4305152553,
+      "author_login": "chatgpt-codex-connector[bot]",
+      "review_id": "5560818457",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152553",
+      "created_at": "2026-10-18T00:39:47Z",
+      "updated_at": "2026-10-18T00:39:47Z",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Require the parent checkpoint to decode to exactly 32 bytes**\n\nWhen a parent value contains whitespace, the character-count check can pass while `bytes.fromhex` silently ignores that whitespace; for example, 64 spaces decode to zero bytes and are accepted by both construction and verification. The resulting root is therefore not bound to the required 32-byte predecessor digest, and multiple malformed textual parents can encode the same commitment; validate with an exact 64-hex-character pattern or check the decoded length.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "id": 4305154570,
+      "author_login": "Copilot",
+      "review_id": "5560820587",
+      "path": "contracts/AGENT_TURN.schema.json",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154570",
+      "created_at": "2026-10-18T00:40:40Z",
+      "updated_at": "2026-10-18T00:40:41Z",
+      "body": "With `additionalProperties=false` and no event-kind property, an AgentTurn record cannot include a structured discriminator for a tool invocation, code edit, test or PR review. `actor` and `status` do not distinguish those actions. This leaves the distinct typed events required by `docs/COPILOT_CHAIN_OF_CUSTODY.md:7` without a corresponding field, although the FCO/FCG `CustodyEvent` contract already declares `event_type`. Add a required event-kind field with documented values, and update admission validation, synthetic fixtures and the notebook to use it."
+    },
+    {
+      "id": 4305154584,
+      "author_login": "Copilot",
+      "review_id": "5560820587",
+      "path": "contracts/FCO_FCG_v1.json",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154584",
+      "created_at": "2026-10-18T00:40:40Z",
+      "updated_at": "2026-10-18T00:40:41Z",
+      "body": "The canonical edge vocabulary omits the citation relationships required by `docs/CITATION_ADMISSION_POLICY.md:9` and listed in the publication register, plus `CONTAINS_RECEIPT` used in `docs/COPILOT_CHAIN_OF_CUSTODY.md:18`. Consumers following this contract cannot represent those links without using unsupported edge types. Add the missing relationships to the canonical vocabulary."
+    },
+    {
+      "id": 4305154599,
+      "author_login": "Copilot",
+      "review_id": "5560820587",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154599",
+      "created_at": "2026-10-18T00:40:41Z",
+      "updated_at": "2026-10-18T00:40:41Z",
+      "body": "Both `_encode_parent` and `reference_verify` check the parent's character count, but `bytes.fromhex` ignores whitespace. A parent of 64 spaces therefore encodes only the parent tag, with no digest, and a matching receipt passes verification. This violates the documented 32-byte predecessor encoding. Require exactly 64 hexadecimal characters, or require 32 decoded bytes after the existing length check, in both paths. Add a malformed-parent negative case for construction and for an externally supplied receipt; fixing only construction leaves verification permissive."
+    },
+    {
+      "id": 4305154610,
+      "author_login": "Copilot",
+      "review_id": "5560820587",
+      "path": "custody/agent_turn_mmr.py",
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154610",
+      "created_at": "2026-10-18T00:40:41Z",
+      "updated_at": "2026-10-18T00:40:41Z",
+      "body": "Event admission is incomplete in both entry points. The constructor accepts schema-invalid values such as `actor=null`, `input_occurrences=\"bad\"`, and `sequence=false` at index 0; those checkpoints also pass `reference_verify`. The verifier additionally accepts self-consistent receipts for an empty list or events containing only `event_id` and `sequence`, which the constructor rejects. Apply shared nonempty/event-object and full `contracts/AGENT_TURN.schema.json` validation before hashing in both paths, while keeping tree reconstruction independent. Add negative cases for missing fields, invalid types/enums, extra properties and empty input so verification cannot approve out-of-contract events."
+    }
+  ]
+}

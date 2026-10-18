@@ -1,0 +1,28 @@
+{
+  "schema": "xrz.review_findings_successor.v2",
+  "predecessor": "governance/REVIEW_FINDINGS_COPILOT_CODEX_001.json",
+  "reviewer": "chatgpt-codex-connector",
+  "review_submitted_utc": "2026-10-18T00:51:04Z",
+  "reviewed_predecessor_commit": "3f47bd76f6b135ac5f8636f389ad467430f6c35b",
+  "findings": [
+    {
+      "id": 4305180148,
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305180148",
+      "claim": "Malformed boolean-as-integer event_count and peak heights accepted in reference_verify",
+      "status": "FIX_COMMITTED_CI_PENDING",
+      "successor_code_commit": "381fd1d0d8778eb93409bbabc1310ffab8ed1e63",
+      "fix": "Exact receipt shape, type(count) is int, type(peak.height) is int; validate ordered mountain sizes, digest types, unsigned states"
+    },
+    {
+      "id": 4305180150,
+      "url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305180150",
+      "claim": "Previous governance claims of verifier-level negative regression coverage were unsupported",
+      "status": "FIX_COMMITTED_CI_PENDING",
+      "successor_test_commit": "43b69f143d9ce3f51d7871c3f7d6e5fb7c8b8053",
+      "fix": "Add 9 verifier-level regression tests for unsupported statuses, schema invalid, empty receipt, whitespace parent, bool count/height, appended event, shape and peaks"
+    }
+  ],
+  "source_event_provenance": "Public GitHub PR comments, not signed reviewer execution",
+  "safety_status": "NOT_SIGNED; PRODUCTION_MMR_NOT_COMMITTED",
+  "next_action": "Verify latest GitHub CI; preserve failing statuses if any; request follow-up independent review; never overwrite prior receipts"
+}

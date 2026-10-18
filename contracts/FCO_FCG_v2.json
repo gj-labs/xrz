@@ -1,0 +1,157 @@
+{
+  "schema": "xrz.fco_fcg.v2",
+  "state": "DESIGN_NOT_EXECUTED",
+  "canonicalization": "UTF-8 JSON with sorted keys; formal JCS/RFC8785 or other cross-language canonical numeric encoding must be pinned and independently verified before production",
+  "hash_algorithm": "SHA-256",
+  "entities": {
+    "Source": [
+      "source_id",
+      "uri",
+      "retrieved_at",
+      "license",
+      "rights_decision",
+      "raw_bytes_sha256",
+      "content_length"
+    ],
+    "Atom": [
+      "atom_content_id",
+      "occurrence_id",
+      "source_id",
+      "context_id",
+      "kind",
+      "payload",
+      "payload_sha256",
+      "units"
+    ],
+    "Transformation": [
+      "transform_id",
+      "software_commit",
+      "code_hash",
+      "parameter_hash",
+      "ordered_inputs",
+      "outputs",
+      "runtime_receipt"
+    ],
+    "ModelRun": [
+      "run_id",
+      "model_weights_sha256",
+      "tokenizer_sha256",
+      "runtime",
+      "backend",
+      "device_id",
+      "input_hash",
+      "output_hash",
+      "status",
+      "latency"
+    ],
+    "ProtocolStep": [
+      "protocol_id",
+      "protocol_version",
+      "step_id",
+      "preconditions",
+      "observation_ids",
+      "human_approval",
+      "decision",
+      "deviation"
+    ],
+    "CustodyEvent": [
+      "event_id",
+      "source_device_pseudonym",
+      "sequence",
+      "wall_time",
+      "monotonic_time",
+      "event_type",
+      "content_id",
+      "occurrence_id",
+      "context_id",
+      "parent_checkpoint"
+    ],
+    "Breakpoint": [
+      "algorithm_version",
+      "ordered_leaves",
+      "peaks",
+      "root",
+      "verification_receipt",
+      "signing_state"
+    ],
+    "Claim": [
+      "claim_id",
+      "evidence_ids",
+      "oracle",
+      "controls",
+      "limitations",
+      "status"
+    ],
+    "Release": [
+      "release_id",
+      "data_rights",
+      "code_rights",
+      "media_consent",
+      "privacy_review",
+      "approver",
+      "decision"
+    ],
+    "AgentTurn": [
+      "schema",
+      "event_id",
+      "actor",
+      "turn_id",
+      "parent_turn_id",
+      "repo",
+      "task_ref",
+      "sequence",
+      "status",
+      "event_kind",
+      "instruction_blob_sha256",
+      "model_id",
+      "model_version",
+      "git_before",
+      "git_after",
+      "source_repository_commit",
+      "tool_execution_receipt_ref",
+      "observation_context_ref",
+      "input_occurrences",
+      "output_occurrences",
+      "evidence_refs",
+      "human_decision_ref",
+      "signed_receipt_ref",
+      "failures",
+      "next_action"
+    ]
+  },
+  "edge_types": [
+    "DERIVED_FROM",
+    "OCCURRED_ON",
+    "USED_MODEL",
+    "CHECKED_BY",
+    "BLOCKED_BY",
+    "SUPERSEDES",
+    "REVIEWED_BY",
+    "RECEIVED_FROM",
+    "CITES",
+    "BUILDS_ON",
+    "USES_DATA_FROM",
+    "REPRODUCES",
+    "COMPARES_WITH",
+    "CORRECTS",
+    "CONTAINS_RECEIPT"
+  ],
+  "requirements": [
+    "content identity independent of occurrence identity",
+    "append-only and predecessor preserved",
+    "no causal claims from edges",
+    "MMR_COMMITTED only after ordered leaves peaks root construction verification receipt",
+    "NOT_SIGNED until signature independently verified",
+    "PPE vision proposal not authorization",
+    "unknown source provenance remains UNKNOWN",
+    "Publication citations use distinct citation occurrence atoms and typed CITES/BUILDS_ON/COMPARES_WITH/REPRODUCES edges; these are declarations, not proof of priority",
+    "Higher-level receipt aggregation uses CONTAINS_RECEIPT typed edge pointing to verified lower-level breakpoint receipts",
+    "AgentTurn event_kind discriminator required by successor contracts/AGENT_TURN.v2.schema.json",
+    "AgentTurn entity fields exactly match the strict accepted keys in contracts/AGENT_TURN.v2.schema.json; context-specific FCO occurrence references are separately typed graph nodes, not undeclared agent event JSON fields"
+  ],
+  "predecessor_contract": {
+    "path": "contracts/FCO_FCG_v1.json",
+    "original_blob_sha": "158b7b227bbd9f44bd6b1fa5e1f0cf6db880c5f8",
+    "note": "Preserve v1; this successor expands declared relationship vocabulary, not causality"
+  }
+}

@@ -1,0 +1,44 @@
+name: XRZ agent-turn MMR reference tests
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - handoff/mvp-custody-team-20261017
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mmr-unit-and-notebook:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact PR source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Python version
+        run: python3 --version
+      - name: Install pinned schema and notebook validators
+        run: python3 -m pip install --disable-pip-version-check 'jsonschema==4.23.0' 'nbformat==5.10.4' 'nbclient==0.10.2' 'ipykernel==6.29.5'
+      - name: Run full schema and Merkle unit tests
+        run: PYTHONPATH=. python3 -m unittest discover -s tests -v
+      - name: Execute full reproducible notebook in clean kernel
+        run: |
+          python3 - <<'PY'
+          import nbformat
+          from nbclient import NotebookClient
+          path = 'notebooks/00_agent_turn_merkle_breakpoints.ipynb'
+          nb = nbformat.read(path, as_version=4)
+          nbformat.validate(nb)
+          executed = NotebookClient(nb, timeout=90, kernel_name='python3',
+                                    resources={'metadata': {'path': 'notebooks'}}).execute()
+          assert all(cell.get('execution_count') is not None for cell in executed.cells if cell.cell_type == 'code')
+          print('PASS: local synthetic notebook; not actual Copilot or external attestation')
+          PY
+      - name: Compute actual Github reviewer-comment FCO and ordered L1 MMR
+        run: PYTHONPATH=. python3 scripts/checkpoint_real_reviews.py

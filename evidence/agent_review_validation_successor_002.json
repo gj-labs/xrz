@@ -1,0 +1,38 @@
+{
+  "schema": "xrz.agent_review_validation_successor.v1",
+  "predecessor_review_register": "governance/REVIEW_FINDINGS_COPILOT_CODEX_002.json",
+  "reviewed_predecessor_commit": "3f47bd76f6b135ac5f8636f389ad467430f6c35b",
+  "corrective_code_commit": "381fd1d0d8778eb93409bbabc1310ffab8ed1e63",
+  "corrective_test_commit": "43b69f143d9ce3f51d7871c3f7d6e5fb7c8b8053",
+  "github_execution": {
+    "workflow_run_id": 39084689952,
+    "url": "https://github.com/biobitworks/xrz/actions/runs/39084689952",
+    "result": "SUCCESS",
+    "job": "mmr-unit-and-notebook",
+    "steps": [
+      "Run full schema and Merkle unit tests",
+      "Execute full reproducible notebook in clean kernel",
+      "Compute actual Github reviewer-comment FCO and ordered L1 MMR"
+    ],
+    "verification_scope": "github-hosted tests on one runner only"
+  },
+  "review_findings": [
+    {
+      "id": 4305180148,
+      "state": "REMEDIATION_EXECUTED_CI_PASS_REVIEW_PENDING"
+    },
+    {
+      "id": 4305180150,
+      "state": "REMEDIATION_EXECUTED_CI_PASS_REVIEW_PENDING"
+    }
+  ],
+  "reference_review_evidence": {
+    "source": "evidence/github_review_comments_snapshot_v1.json",
+    "root": "e6fe76c0b5baaac578c42d8920b9ac0b221ecd4db02dc9d672fdfc426a05b449",
+    "state": "CALCULATED_TESTED_SINGLE_HOST_NOT_PRODUCTION_COMMITTED"
+  },
+  "signature_status": "NOT_SIGNED",
+  "review_status": "HUMAN_APPROVAL_PENDING",
+  "copilot_execution_scope": "REAL_COPILOT_REVIEWER_OCCURRED; COPILOT_CODING_AGENT_NOT_TESTED",
+  "next_action": "Obtain independent new reviewer verdict and a separate host reconstruction with an authenticated predecessor before promoting release state"
+}

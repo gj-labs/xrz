@@ -1,0 +1,114 @@
+{
+  "schema": "xrz.fco_fcg.v1",
+  "state": "DESIGN_NOT_EXECUTED",
+  "canonicalization": "UTF-8 JSON with sorted keys; formal JCS/RFC8785 or other cross-language canonical numeric encoding must be pinned and independently verified before production",
+  "hash_algorithm": "SHA-256",
+  "entities": {
+    "Source": [
+      "source_id",
+      "uri",
+      "retrieved_at",
+      "license",
+      "rights_decision",
+      "raw_bytes_sha256",
+      "content_length"
+    ],
+    "Atom": [
+      "atom_content_id",
+      "occurrence_id",
+      "source_id",
+      "context_id",
+      "kind",
+      "payload",
+      "payload_sha256",
+      "units"
+    ],
+    "Transformation": [
+      "transform_id",
+      "software_commit",
+      "code_hash",
+      "parameter_hash",
+      "ordered_inputs",
+      "outputs",
+      "runtime_receipt"
+    ],
+    "ModelRun": [
+      "run_id",
+      "model_weights_sha256",
+      "tokenizer_sha256",
+      "runtime",
+      "backend",
+      "device_id",
+      "input_hash",
+      "output_hash",
+      "status",
+      "latency"
+    ],
+    "ProtocolStep": [
+      "protocol_id",
+      "protocol_version",
+      "step_id",
+      "preconditions",
+      "observation_ids",
+      "human_approval",
+      "decision",
+      "deviation"
+    ],
+    "CustodyEvent": [
+      "event_id",
+      "source_device_pseudonym",
+      "sequence",
+      "wall_time",
+      "monotonic_time",
+      "event_type",
+      "content_id",
+      "occurrence_id",
+      "context_id",
+      "parent_checkpoint"
+    ],
+    "Breakpoint": [
+      "algorithm_version",
+      "ordered_leaves",
+      "peaks",
+      "root",
+      "verification_receipt",
+      "signing_state"
+    ],
+    "Claim": [
+      "claim_id",
+      "evidence_ids",
+      "oracle",
+      "controls",
+      "limitations",
+      "status"
+    ],
+    "Release": [
+      "release_id",
+      "data_rights",
+      "code_rights",
+      "media_consent",
+      "privacy_review",
+      "approver",
+      "decision"
+    ]
+  },
+  "edge_types": [
+    "DERIVED_FROM",
+    "OCCURRED_ON",
+    "USED_MODEL",
+    "CHECKED_BY",
+    "BLOCKED_BY",
+    "SUPERSEDES",
+    "REVIEWED_BY",
+    "RECEIVED_FROM"
+  ],
+  "requirements": [
+    "content identity independent of occurrence identity",
+    "append-only and predecessor preserved",
+    "no causal claims from edges",
+    "MMR_COMMITTED only after ordered leaves peaks root construction verification receipt",
+    "NOT_SIGNED until signature independently verified",
+    "PPE vision proposal not authorization",
+    "unknown source provenance remains UNKNOWN"
+  ]
+}
