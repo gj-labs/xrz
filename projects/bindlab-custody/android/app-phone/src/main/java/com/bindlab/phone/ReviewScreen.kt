@@ -55,6 +55,7 @@ import com.bindlab.phone.ui.Pill
 import com.bindlab.phone.ui.StageChip
 import com.bindlab.shared.net.ProtocolStep
 import com.bindlab.shared.net.RunEvent
+import com.bindlab.shared.net.StepReport
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -86,7 +87,7 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
         }
 
         Box(Modifier.weight(1f)) {
-            val step = detail?.currentStep
+            val step = detail?.reviewStep
             when {
                 ui.loading -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     CircularProgressIndicator()
@@ -101,10 +102,18 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
                 else -> LazyColumn(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp)) {
                     if (step != null) item(key = "step:${step.id}") {
                         StepReviewCard(
-                            step, index = detail.summary.stepIndex, total = detail.steps.size,
+                            step, index = detail.reviewsAccepted, total = detail.steps.size, report = detail.reviewReport,
                             reviewer = reviewer, onReviewer = vm::setReviewer,
                             busy = ui.reviewing, onDecision = vm::reviewStep,
                         )
+                    } else detail.liveStep?.let { live ->
+                        item(key = "live:${live.id}") {
+                            Text(
+                                stringResource(R.string.review_live_step, detail.summary.stepIndex + 1, detail.steps.size, live.title),
+                                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(bottom = 16.dp),
+                            )
+                        }
                     }
                     itemsIndexed(detail.events) { i, e -> TimelineRow(e, last = i == detail.events.lastIndex) }
                 }
@@ -126,12 +135,13 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
     }
 }
 
-/** Current protocol step with Accept / Reject. Accept is what advances the headset (POST /lab/review). */
+/** Next step awaiting sign-off, with the headset's recorded verdict. Post-hoc: the headset has already moved on. */
 @Composable
 private fun StepReviewCard(
     step: ProtocolStep,
     index: Int,
     total: Int,
+    report: StepReport?,
     reviewer: String,
     onReviewer: (String) -> Unit,
     busy: Boolean,
@@ -147,7 +157,14 @@ private fun StepReviewCard(
             Text(stringResource(R.string.review_step_n, index + 1, total), style = MaterialTheme.typography.labelLarge, color = BindLabColors.Amber)
             Text(step.title, style = MaterialTheme.typography.titleMedium)
             if (step.instruction.isNotEmpty()) Text(step.instruction, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (step.required.isNotEmpty()) Text(stringResource(R.string.review_requires, step.required.joinToString()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (report != null) {
+                val verdict = if (report.claim == "passed") stringResource(R.string.review_headset_passed) else stringResource(R.string.review_headset_anomaly)
+                Text(
+                    "$verdict · ${timeFmt.format(Date(report.wallTimeMs))}" + (if (report.photoSha256 != null) " · 📷" else ""),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (report.claim == "passed") BindLabColors.Teal else BindLabColors.Red,
+                )
+            }
             OutlinedTextField(
                 value = reviewer, onValueChange = onReviewer, singleLine = true,
                 label = { Text(stringResource(R.string.reviewer)) }, modifier = Modifier.fillMaxWidth(),

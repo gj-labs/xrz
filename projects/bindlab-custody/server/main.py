@@ -37,6 +37,9 @@ OWN_PORT = int(os.environ.get("BINDLAB_PORT", "8011"))
 XR_SOC = "SXR2230P"
 XR_REVERSE_PORTS = (8000, 8080)
 XR_LAB_ACTIVITY = "com.bindlab.xr/.MainActivity"
+# Solo-operator mode (default): a passed step report advances the run at once and phone review is a
+# post-hoc sign-off. Set BINDLAB_AUTO_ADVANCE=0 for the human-in-the-loop gate (review advances).
+AUTO_ADVANCE = os.environ.get("BINDLAB_AUTO_ADVANCE", "1") == "1"
 
 app = FastAPI(title="BindLab XR")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -374,7 +377,12 @@ async def post_step(s: Step):
     except (ValueError, TypeError) as exc:
         raise HTTPException(422, str(exc))
     await hub.send({"type": "custody", "run_id": s.run_id, **receipt}, to={"web", "xr"})
-    result = {"state": run["state"], "decision": "HUMAN_REVIEW_REQUIRED", **receipt}
+    decision = "HUMAN_REVIEW_REQUIRED"
+    if AUTO_ADVANCE and s.status == "passed":
+        state, idx = wf.advance_step(run["step_index"])
+        run = await set_state(s.run_id, state, step_index=idx)
+        decision = "ADVANCED_PENDING_REVIEW"
+    result = {"state": run["state"], "decision": decision, **receipt}
     if s.client_event_id:
         db.put_idempotent(s.run_id, s.client_event_id, "/lab/step", result)
     return result
@@ -423,23 +431,30 @@ class StepReview(BaseModel):
 
 @app.post("/lab/review/{run_id}")
 async def review_step(run_id: str, review: StepReview):
+    """Human sign-off of the next unreviewed step (reviews are strictly in protocol order). It only
+    moves the run when the review is for the live step, i.e. in human-gate mode or once a post-hoc
+    review has caught up with the headset."""
     run = load_run(run_id)
-    guard(run, "STEP")
-    step = wf.current_step(run["step_index"])
+    guard(run, "STEP", "APPROVAL", "BEAMED", "EVIDENCE", "PATENT_DRAFT")
+    reviewed = custody.accepted_reviews(run_id)
+    step = wf.current_step(reviewed)
     if not step or step["id"] != review.step_id:
-        raise HTTPException(409, "out-of-order review")
+        raise HTTPException(409, f"out-of-order review: next step to review is {step and step['id']}")
     try:
         receipt = await journal(run_id, "Review", review.model_dump())
     except ValueError as exc:
         raise HTTPException(409, str(exc))
+    live = run["state"].startswith("STEP_") and run["step_index"] == reviewed
     if review.accepted:
-        state, idx = wf.advance_step(run["step_index"])
-        run = await set_state(run_id, state, step_index=idx)
-    else:
+        reviewed += 1
+        if live:
+            state, idx = wf.advance_step(run["step_index"])
+            run = await set_state(run_id, state, step_index=idx)
+    elif live:
         # Not a transition: re-announce the current step so the headset re-arms its gate.
         await hub.send({"type": "state", "run_id": run_id, "state": run["state"],
                         "step_index": run["step_index"]})
-    return {"state": run["state"], **receipt}
+    return {"state": run["state"], "reviews_accepted": reviewed, **receipt}
 
 
 @app.get("/runs/{run_id}/fcg")
@@ -520,7 +535,8 @@ async def get_runs():
 async def get_run(run_id: str):
     run = with_structure(load_run(run_id))
     return {**run, "events": db.list_events(run_id), "chain_ok": db.verify_chain(run_id),
-            "protocol": wf.PROTOCOL}
+            "protocol": wf.PROTOCOL, "auto_advance": AUTO_ADVANCE,
+            "reviews_accepted": custody.accepted_reviews(run_id), "reports": custody.step_reports(run_id)}
 
 
 @app.get("/protocol")

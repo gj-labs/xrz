@@ -419,10 +419,10 @@ class PhoneViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Accept or reject the step currently under review; the hub advances the run only on accept. */
+    /** Sign off the next unreviewed step. Post-hoc by default: the headset has already moved on. */
     fun reviewStep(accepted: Boolean, note: String) {
         val id = reviewRunId.value ?: return
-        val step = review.value.detail?.currentStep ?: return
+        val step = review.value.detail?.reviewStep ?: return
         val who = reviewer.value.trim().ifEmpty { "phone" }
         val text = note.trim().ifEmpty { if (accepted) "Accepted on phone review" else "Rejected on phone review" }
         review.update { it.copy(reviewing = true, error = null) }

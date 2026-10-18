@@ -52,8 +52,12 @@ Then open `http://localhost:8000/xr.html` in the Galaxy XR browser and tap **Sta
   - Handoff also enters the lab (`SENT_TO_LAB → LAB_ENTERED → STEP_1`, protocol broadcast) and, with
     `BINDLAB_XR_USB=1`, launches the headset lab app over adb (`launched` flag; failures never fail the handoff).
     Repeating it on a run already in `STEP_n` rebroadcasts protocol + state so the headset resyncs.
-- `POST /lab/step {run_id, step_id, status: passed|anomaly, detections, snapshot_b64}` (records a claim; never advances)
-- `POST /lab/review/{run} {step_id, reviewer, note, accepted}` — the phone's Accept advances to the next step
+- `POST /lab/step {run_id, step_id, status: passed|anomaly, detections, snapshot_b64}` — records a photo-backed
+  claim. By default (`BINDLAB_AUTO_ADVANCE=1`, solo operator) a `passed` report advances the run at once
+  (`decision: ADVANCED_PENDING_REVIEW`); anomalies are recorded and the operator's "Continue anyway" decides.
+- `POST /lab/review/{run} {step_id, reviewer, note, accepted}` — human sign-off of the next unreviewed step, in
+  protocol order (needs a report for that step). Post-hoc by default; with `BINDLAB_AUTO_ADVANCE=0` the run only
+  advances on Accept (human-in-the-loop gate). `GET /runs/{id}` exposes `reviews_accepted`, `reports`, `auto_advance`.
 - `POST /approve/{run}` · `POST /evidence/{run}` · `POST /patent/{run}` · `GET /evidence/{run}.pdf` · `GET /patent/{run}.pdf`
 - `WS /ws?client=phone|xr|web`
   - Server → client: `state`, `protocol`, `beam`, `haptic`, `anomaly`

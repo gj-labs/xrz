@@ -54,8 +54,10 @@
     <string name="export_evidence">Export evidence PDF</string>
     <string name="review_loading">Loading run…</string>
     <string name="review_empty">No events yet</string>
-    <string name="review_step_n">Step %1$d of %2$d · awaiting review</string>
-    <string name="review_requires">Headset must see: %1$s</string>
+    <string name="review_step_n">Step %1$d of %2$d · awaiting sign-off</string>
+    <string name="review_headset_passed">Headset: passed</string>
+    <string name="review_headset_anomaly">Headset: deviation recorded</string>
+    <string name="review_live_step">Headset is on step %1$d of %2$d (%3$s) — nothing to sign off yet</string>
     <string name="reviewer">Reviewer</string>
     <string name="review_note">Note (why accepted / rejected)</string>
     <string name="accept">Accept</string>

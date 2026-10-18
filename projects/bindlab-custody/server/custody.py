@@ -237,6 +237,18 @@ def accepted_reviews(run):
         c.close()
 
 
+def step_reports(run):
+    """StepReport claims (step, headset verdict, time, photo hash), read directly for the phone's sign-off card."""
+    c = connect()
+    try:
+        return [{'step_id': a, 'claim': b, 'wall_time': t, 'photo_sha256': h} for a, b, t, h in c.execute(
+            "SELECT json_extract(event,'$.payload.step_id'), json_extract(event,'$.payload.client_claim'), "
+            "json_extract(event,'$.wall_time'), json_extract(event,'$.payload.photo.raw_bytes_sha256') "
+            "FROM journal WHERE run=? AND json_extract(event,'$.event_type')='StepReport' ORDER BY seq", (run,))]
+    finally:
+        c.close()
+
+
 def export(run):
     c = connect()
     try:

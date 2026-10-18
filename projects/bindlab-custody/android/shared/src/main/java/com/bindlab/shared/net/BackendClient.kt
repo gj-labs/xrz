@@ -70,14 +70,24 @@ data class RunSummary(
 
 data class RunEvent(val kind: String, val ts: Double, val payload: JSONObject)
 
+/** Headset's recorded verdict for a step (custody StepReport). */
+data class StepReport(val stepId: String, val claim: String, val wallTimeMs: Long, val photoSha256: String?)
+
 data class RunDetail(
     val summary: RunSummary,
     val chainOk: Boolean,
     val events: List<RunEvent>,
     val steps: List<ProtocolStep> = emptyList(),
+    /** Accepted reviews so far; reviews are strictly in protocol order, so this is also the next step to review. */
+    val reviewsAccepted: Int = 0,
+    val reports: List<StepReport> = emptyList(),
+    val autoAdvance: Boolean = true,
 ) {
-    /** Protocol step under review while the run is in a `STEP_n` state; null otherwise. */
-    val currentStep: ProtocolStep? get() = if (summary.state.startsWith("STEP_")) steps.getOrNull(summary.stepIndex) else null
+    /** Next step to sign off, once the headset has filed evidence for it (the hub requires a photo-backed report). */
+    val reviewStep: ProtocolStep? get() = steps.getOrNull(reviewsAccepted)?.takeIf { s -> reports.any { it.stepId == s.id } }
+    val reviewReport: StepReport? get() = reviewStep?.let { s -> reports.lastOrNull { it.stepId == s.id } }
+    /** Live step on the headset (`STEP_n`), null outside the lab phase. */
+    val liveStep: ProtocolStep? get() = if (summary.state.startsWith("STEP_")) steps.getOrNull(summary.stepIndex) else null
 }
 
 data class StepReviewRequest(val stepId: String, val reviewer: String, val note: String, val accepted: Boolean) {
@@ -129,12 +139,20 @@ class BackendClient(private val baseUrl: () -> String, private val http: OkHttpC
             RunEvent(e.optString("kind"), e.optDouble("ts", 0.0), e.optJSONObject("payload") ?: JSONObject())
         }
         val steps = ServerMessage.parseSteps(o.optJSONObject("protocol")?.optJSONArray("steps"))
-        return RunDetail(RunSummary.fromJson(o), o.optBoolean("chain_ok", false), events, steps)
+        val rp = o.optJSONArray("reports")
+        val reports = (0 until (rp?.length() ?: 0)).map { i ->
+            val r = rp!!.getJSONObject(i)
+            StepReport(r.optString("step_id"), r.optString("claim"), r.optLong("wall_time", 0L), r.optString("photo_sha256").ifEmpty { null })
+        }
+        return RunDetail(
+            RunSummary.fromJson(o), o.optBoolean("chain_ok", false), events, steps,
+            reviewsAccepted = o.optInt("reviews_accepted", 0), reports = reports, autoAdvance = o.optBoolean("auto_advance", true),
+        )
     }
 
     suspend fun labHandoff(runId: String): JSONObject = post("/lab/handoff/$runId", JSONObject())
 
-    /** Human review of the current step; an accepted review advances the run (see CUSTODY.md). */
+    /** Human sign-off of the next unreviewed step (post-hoc by default; advances the run only in human-gate mode). */
     suspend fun reviewStep(runId: String, r: StepReviewRequest): JSONObject = post("/lab/review/$runId", r.toJson())
 
     /** Generates the evidence PDF; returns the server-relative PDF path. */

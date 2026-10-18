@@ -23,9 +23,12 @@ Each accepted observation and derived assessment is journaled before broadcast. 
 messages are rejected. These are receiver occurrences, not exactly-once source events: retransmission creates
 a new occurrence. There is no device sequence reconciliation or capture-time attestation.
 
-`POST /lab/step` requires a photo and records the client verdict as a claim. It never advances the protocol.
-`POST /lab/review/{run_id}` with `step_id`, `reviewer`, `note`, and `accepted` records a local human decision;
-an accepted decision advances one step. A photo-backed report is required. Review may accept a suspected
+`POST /lab/step` requires a photo and records the client verdict as a claim. With `BINDLAB_AUTO_ADVANCE=0`
+it never advances the protocol; in the default solo-operator mode a `passed` claim advances the run state
+immediately and the human review becomes a post-hoc sign-off (the journal still records which it was).
+`POST /lab/review/{run_id}` with `step_id`, `reviewer`, `note`, and `accepted` records a local human decision
+for the next unreviewed step, in protocol order; in human-gate mode an accepted decision advances one step.
+A photo-backed report is required. Review may accept a suspected
 deviation, so its note must explain that decision. This is not safety authorization or scientific validation.
 The custody journal is authoritative for accepted reviews; the old UI run index recovers from it after a crash.
 `GET /runs/{run_id}/fcg` exports typed Experiment, Run, ProtocolStep, observation, claim, review nodes and
