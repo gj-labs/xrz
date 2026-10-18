@@ -1,0 +1,18 @@
+{
+  "map": {
+    "bottle": "reagent",
+    "cup": "beaker",
+    "scissors": "tool",
+    "cell phone": "scanner",
+    "book": "notebook",
+    "person": "operator"
+  },
+  "class_ids": {
+    "bottle": 39,
+    "cup": 41,
+    "scissors": 76,
+    "cell phone": 67,
+    "book": 73,
+    "person": 0
+  }
+}

@@ -1,0 +1,11 @@
+# keep binaries, weights and environments out of anything shared
+.venv/
+.venv-*/
+.cache/
+__pycache__/
+weights/
+artifacts/*.pte
+artifacts/*.bin
+*.pt
+*.etrecord
+artifacts/runtime/

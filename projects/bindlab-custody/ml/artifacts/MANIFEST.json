@@ -1,0 +1,550 @@
+{
+  "executorch_version": "1.5.1",
+  "entries": [
+    {
+      "file": "binding_head_35M.pte",
+      "kind": "binding_head",
+      "size": "35M",
+      "backend": "xnnpack",
+      "soc_model": null,
+      "qairt_version": null,
+      "inputs": [
+        {
+          "name": "emb_target",
+          "shape": [
+            1,
+            480
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "emb_binder",
+          "shape": [
+            1,
+            480
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prob",
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "weights_json": "binding_head_35M.json",
+      "recommended": "mlp",
+      "holdout_auc": {
+        "mlp": 0.6227810382843018,
+        "cosine": 0.5591716170310974
+      },
+      "size_bytes": 512516,
+      "sha256": "ff34d4e534c5b9655bb5c34998060e503ed1924477a06c2ca654769193ab8c0f",
+      "updated": "2026-10-18T01:51:45+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "prob": 1.0
+        },
+        "max_abs_diff": 3.5762786865234375e-07,
+        "n_inputs": 16,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 0.05
+      }
+    },
+    {
+      "file": "binding_head_8M.pte",
+      "kind": "binding_head",
+      "size": "8M",
+      "backend": "xnnpack",
+      "soc_model": null,
+      "qairt_version": null,
+      "inputs": [
+        {
+          "name": "emb_target",
+          "shape": [
+            1,
+            320
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "emb_binder",
+          "shape": [
+            1,
+            320
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prob",
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "weights_json": "binding_head_8M.json",
+      "recommended": "mlp",
+      "holdout_auc": {
+        "mlp": 0.6553254723548889,
+        "cosine": 0.4948224723339081
+      },
+      "size_bytes": 343556,
+      "sha256": "00f51948f9753bce692968c1a39ab33a68fa992714e19129360deea6db4a473c",
+      "updated": "2026-10-18T01:51:45+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "prob": 1.0
+        },
+        "max_abs_diff": 1.1920928955078125e-07,
+        "n_inputs": 16,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 0.04
+      }
+    },
+    {
+      "file": "esm2_150M_qnn.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t30_150M_UR50D",
+      "size": "150M",
+      "backend": "qnn",
+      "soc_model": "SM8750",
+      "qairt_version": "2.51.0.260929",
+      "quant": "16a8w",
+      "shard": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            640
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "contacts",
+          "shape": [
+            1,
+            254,
+            254
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "calibration": "calib.fasta x50",
+      "size_bytes": 165500928,
+      "sha256": "10a048c8eb740c95a0ca0eb72ee230536d858c5eb93a295f6c8682f97defec55",
+      "updated": "2026-10-18T06:17:10+00:00"
+    },
+    {
+      "file": "esm2_35M_qnn.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t12_35M_UR50D",
+      "size": "35M",
+      "backend": "qnn",
+      "soc_model": "SM8750",
+      "qairt_version": "2.51.0.260929",
+      "quant": "16a8w",
+      "shard": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            480
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "contacts",
+          "shape": [
+            1,
+            254,
+            254
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "calibration": "calib.fasta x50",
+      "size_bytes": 40427008,
+      "sha256": "98eebaaf7eeb51dd7aa68e642d99e3383be696c0a77a5e0ff55ba06d259aa314",
+      "updated": "2026-10-18T06:10:25+00:00"
+    },
+    {
+      "file": "esm2_35M_xnnpack.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t12_35M_UR50D",
+      "size": "35M",
+      "backend": "xnnpack",
+      "quant": "fp32",
+      "group_size": null,
+      "soc_model": null,
+      "qairt_version": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int64"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            480
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "contacts",
+          "shape": [
+            1,
+            254,
+            254
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "size_bytes": 133300612,
+      "sha256": "56c540222b1e6a05f9b12646d64aa96e2bd6d8d53a4cc7b641761b95a865e8ce",
+      "updated": "2026-10-18T01:51:47+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "embedding": 0.999999,
+          "contacts": 0.999735
+        },
+        "n_inputs": 4,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 101.87
+      }
+    },
+    {
+      "file": "esm2_650M_qnn.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t33_650M_UR50D",
+      "size": "650M",
+      "backend": "qnn",
+      "soc_model": "SM8750",
+      "qairt_version": "2.51.0.260929",
+      "quant": "16a8w",
+      "shard": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            1280
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "calibration": "calib.fasta x50",
+      "size_bytes": 666990080,
+      "sha256": "1fe91745875f95753cd419c07d527da0da1854cbae032d7e79a277b7711e953d",
+      "updated": "2026-10-18T06:52:20+00:00"
+    },
+    {
+      "file": "esm2_650M_xnnpack.pte",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "embedding": 0.988698
+        },
+        "n_inputs": 4,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 389.44
+      },
+      "soc_model": null,
+      "qairt_version": null,
+      "updated": "2026-10-18T01:51:53+00:00",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t33_650M_UR50D",
+      "size": "650M",
+      "backend": "xnnpack",
+      "quant": "8da4w",
+      "group_size": 32,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int64"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            1280
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "size_bytes": 367960832,
+      "sha256": "8cb8abf5a7245b0212b2992b107dcedccda4766fb101cc084adbab5e721eaf07"
+    },
+    {
+      "file": "esm2_8M_qnn.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t6_8M_UR50D",
+      "size": "8M",
+      "backend": "qnn",
+      "soc_model": "SM8750",
+      "qairt_version": "2.51.0.260929",
+      "quant": "16a8w",
+      "shard": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            320
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "contacts",
+          "shape": [
+            1,
+            254,
+            254
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "calibration": "calib.fasta x50",
+      "size_bytes": 10396928,
+      "sha256": "623bd9073fc7bc7ac330e50edbd29d4d82e54bd098c5eaf0fbe231ec366c76b6",
+      "updated": "2026-10-18T06:05:42+00:00"
+    },
+    {
+      "file": "esm2_8M_xnnpack.pte",
+      "kind": "esm2",
+      "model_id": "facebook/esm2_t6_8M_UR50D",
+      "size": "8M",
+      "backend": "xnnpack",
+      "quant": "fp32",
+      "group_size": null,
+      "soc_model": null,
+      "qairt_version": null,
+      "inputs": [
+        {
+          "name": "input_ids",
+          "shape": [
+            1,
+            256
+          ],
+          "dtype": "int64"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "embedding",
+          "shape": [
+            1,
+            320
+          ],
+          "dtype": "float32"
+        },
+        {
+          "name": "contacts",
+          "shape": [
+            1,
+            254,
+            254
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "seq_len": 256,
+      "vocab": "esm2_vocab.json",
+      "size_bytes": 29763076,
+      "sha256": "ca2eced12aa9f377539e1f72376b96b83e3c65e070a2ec505020d45474e53b49",
+      "updated": "2026-10-18T01:51:53+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "embedding": 1.0,
+          "contacts": 0.999978
+        },
+        "n_inputs": 4,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 37.83
+      }
+    },
+    {
+      "file": "yolo11n_320_xnnpack.pte",
+      "kind": "yolo",
+      "model_id": "yolo11n",
+      "backend": "xnnpack",
+      "export_method": "ultralytics",
+      "imgsz": 320,
+      "output_layout": "[1, 4+80, N]: cx,cy,w,h px + class sigmoid; NMS on device",
+      "inputs": [
+        {
+          "name": "images",
+          "shape": [
+            1,
+            3,
+            320,
+            320
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "detections",
+          "shape": [
+            1,
+            84,
+            2100
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "labels": "yolo_labels.json",
+      "lab_map": "coco_to_lab.json",
+      "soc_model": null,
+      "qairt_version": null,
+      "size_bytes": 10607552,
+      "sha256": "d6e3d9399854a3bfc8def4abdee465f7497674f749e4721db1bff68698b2ffc0",
+      "updated": "2026-10-18T01:51:54+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "detections": 0.999999,
+          "class_scores": 1.000002
+        },
+        "n_inputs": 2,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 11.96
+      }
+    },
+    {
+      "file": "yolo11n_xnnpack.pte",
+      "kind": "yolo",
+      "model_id": "yolo11n",
+      "backend": "xnnpack",
+      "export_method": "ultralytics",
+      "imgsz": 640,
+      "output_layout": "[1, 4+80, N]: cx,cy,w,h px + class sigmoid; NMS on device",
+      "inputs": [
+        {
+          "name": "images",
+          "shape": [
+            1,
+            3,
+            640,
+            640
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "detections",
+          "shape": [
+            1,
+            84,
+            8400
+          ],
+          "dtype": "float32"
+        }
+      ],
+      "labels": "yolo_labels.json",
+      "lab_map": "coco_to_lab.json",
+      "soc_model": null,
+      "qairt_version": null,
+      "size_bytes": 10683072,
+      "sha256": "5e9e694e561b1d5a138545f59f5c22060aa710ae62ae68c8daab76902566dde2",
+      "updated": "2026-10-18T01:51:54+00:00",
+      "verify": {
+        "status": "pass",
+        "threshold": 0.98,
+        "cosine_min": {
+          "detections": 0.999999,
+          "class_scores": 1.000003
+        },
+        "n_inputs": 2,
+        "host": "Darwin arm64",
+        "host_latency_ms_median": 30.42
+      }
+    }
+  ]
+}

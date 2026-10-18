@@ -1,0 +1,98 @@
+{
+  "name": "Carbonic anhydrase II inhibition — colour assay (demo procedure)",
+  "disclaimer": "Demo procedure for a guided-workflow prototype; volumes/concentrations come from the lab's approved SOP.",
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Operator at bench, PPE on",
+      "instruction": "Gloves, coat and goggles on. Say 'start protocol' when ready.",
+      "required": ["person"],
+      "forbidden": [],
+      "critical": true,
+      "troubleshoot": [
+        {"symptom": "Gloves not detected", "cause": "Detector cannot see PPE", "fix": "Confirm by voice: 'PPE on'"}
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Pick up buffer bottle",
+      "instruction": "Take the 25 mM Tris pH 7.4 buffer.",
+      "required": ["bottle"],
+      "forbidden": ["scissors"],
+      "troubleshoot": [
+        {"symptom": "Wrong bottle", "cause": "Similar labels", "fix": "Check label before pouring"}
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Prepare fresh substrate",
+      "instruction": "Dissolve pNPA in acetone to 3 mM. Use within 5 minutes.",
+      "required": ["bottle", "cup"],
+      "forbidden": [],
+      "timer_s": 300,
+      "critical": true,
+      "troubleshoot": [
+        {"symptom": "Blank wells turn yellow", "cause": "Substrate hydrolysed (too old)", "fix": "Make fresh pNPA"}
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Dilution series into plate",
+      "instruction": "Serial-dilute acetazolamide; keep DMSO under 1%.",
+      "required": ["cup"],
+      "forbidden": ["cell phone"],
+      "critical": true,
+      "troubleshoot": [
+        {"symptom": "Cloudy wells", "cause": "Too much DMSO", "fix": "Redo dilutions, DMSO < 1%"}
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Add enzyme and incubate",
+      "instruction": "Add CA-II to each well. Incubate 10 minutes.",
+      "required": ["cup"],
+      "forbidden": [],
+      "timer_s": 600,
+      "critical": true,
+      "troubleshoot": [
+        {"symptom": "No colour anywhere", "cause": "Enzyme inactive (freeze-thaw)", "fix": "Use a fresh aliquot"}
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "Add substrate to start",
+      "instruction": "Add pNPA to all wells; mix gently.",
+      "required": ["bottle", "cup"],
+      "forbidden": [],
+      "critical": true,
+      "troubleshoot": []
+    },
+    {
+      "id": "s7",
+      "title": "Read plate",
+      "instruction": "Check the yellow pattern matches the plate map; read at 400 nm.",
+      "required": ["cup"],
+      "forbidden": [],
+      "troubleshoot": [
+        {"symptom": "Signal saturated", "cause": "Absorbance > 2 AU", "fix": "Dilute and re-read"}
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "Record in notebook",
+      "instruction": "Log run ID, deviations and results.",
+      "required": ["book"],
+      "forbidden": [],
+      "troubleshoot": []
+    }
+  ],
+  "coco_to_lab": {
+    "bottle": "reagent",
+    "cup": "beaker",
+    "scissors": "tool",
+    "cell phone": "scanner",
+    "book": "notebook",
+    "person": "operator",
+    "clock": "timer"
+  }
+}

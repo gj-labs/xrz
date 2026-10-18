@@ -1,0 +1,61 @@
+﻿<resources>
+    <string name="app_name">BindLab Custody</string>
+    <string name="brand">BindLab</string>
+    <string name="home_title">Experiments</string>
+    <string name="home_empty_title">Scan a sample to start</string>
+    <string name="home_empty_body">Point the camera at a sample QR code or paste a target and binder sequence.</string>
+    <string name="new_experiment">New experiment</string>
+    <string name="hub_connected">Hub connected</string>
+    <string name="hub_offline">Hub offline</string>
+    <string name="stage_designed">Designed</string>
+    <string name="stage_in_xr">In XR</string>
+    <string name="stage_ready_lab">Ready for lab</string>
+    <string name="stage_running">Running</string>
+    <string name="stage_reviewed">Reviewed</string>
+
+    <string name="scan_title">Scan sample</string>
+    <string name="scan_helper">Point at the sample QR code</string>
+    <string name="scan_paste">or paste a sequence</string>
+    <string name="scan_hide_paste">hide sequence fields</string>
+    <string name="scan_target">Target</string>
+    <string name="scan_binder">Binder</string>
+    <string name="scan_demo">Use demo pair</string>
+    <string name="scan_again">Scan again</string>
+    <string name="scan_allow_camera">Allow camera</string>
+    <string name="scan_parsed">Sample loaded</string>
+    <string name="scan_no_sequence">QR found but it has no sequence</string>
+    <string name="scan_too_long">Select a domain or fragment of at most %1$d residues before scoring.</string>
+    <string name="scan_model_missing">No model on this phone. Push a .pte to the model folder (see Settings).</string>
+    <string name="predict">Predict binding</string>
+
+    <string name="binding_title">Binding</string>
+    <string name="binding_predicted">predicted binding</string>
+    <string name="binding_similarity">embedding similarity</string>
+    <string name="binding_running">Scoring on device…</string>
+    <string name="binding_confidence_high">High confidence · above %1$.2f threshold</string>
+    <string name="binding_confidence_low">Low confidence · below %1$.2f threshold</string>
+    <string name="binding_confidence_cosine">Similarity only · not a validated binding prediction</string>
+    <string name="binding_target">Target</string>
+    <string name="binding_binder">Binder</string>
+    <string name="binding_disclaimer">Research prediction; requires experimental validation.</string>
+    <string name="open_in_xr">Open in XR</string>
+    <string name="put_on_headset">Put on your headset</string>
+    <string name="sent_to_xr">Sent</string>
+    <string name="xr_live">Live in XR</string>
+    <string name="send_to_lab">Send to lab</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="review">Review</string>
+    <string name="retry">Retry</string>
+
+    <string name="review_title">Review</string>
+    <string name="chain_ok">Chain OK ✓</string>
+    <string name="chain_broken">Chain broken</string>
+    <string name="export_evidence">Export evidence PDF</string>
+    <string name="review_loading">Loading run…</string>
+    <string name="review_empty">No events yet</string>
+
+    <string name="settings">Settings</string>
+    <string name="ladder">Benchmark ladder</string>
+    <string name="back">Back</string>
+</resources>

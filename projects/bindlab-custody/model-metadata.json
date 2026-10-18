@@ -1,0 +1,9 @@
+{
+  "schema": "bindlab.model-provenance.v1",
+  "source_commit": "f0d3da480695725d7b90c7ed274abe3a3c4984b7",
+  "weights_sha256": null,
+  "runtime_sha256": null,
+  "status": "UNKNOWN_NOT_STAGED",
+  "device_execution": "NOT_TESTED",
+  "note": "Do not transfer XR QNN assets to S25; validate compatible artifacts separately."
+}

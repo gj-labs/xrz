@@ -1,0 +1,28 @@
+{
+  "canonicalization": "xrz-json-v1",
+  "event": {
+    "sequence": 0,
+    "label": "cup"
+  },
+  "canonical_utf8_hex": "7b226c6162656c223a22637570222c2273657175656e6365223a307d",
+  "leaf": "3c1089564f7176a99b4025c02d4f7e4b77f85ae073a505e6d6e1585387eee070",
+  "checkpoint": {
+    "algorithm_version": "xrz-domain-separated-mmr-v1",
+    "canonicalization": "xrz-json-v1",
+    "ordered_leaves": [
+      "3c1089564f7176a99b4025c02d4f7e4b77f85ae073a505e6d6e1585387eee070"
+    ],
+    "leaf_count": 1,
+    "peaks": [
+      [
+        0,
+        "3c1089564f7176a99b4025c02d4f7e4b77f85ae073a505e6d6e1585387eee070"
+      ]
+    ],
+    "root": "4e08fa4dd65b32e0875521a1719f72f917183ab28820f15fb62e488c465898a6",
+    "parent_checkpoint": null,
+    "signing_state": "NOT_SIGNED",
+    "state": "MMR_COMMITTED",
+    "verification_receipt": "LOCAL_DUAL_PATH_ONLY"
+  }
+}

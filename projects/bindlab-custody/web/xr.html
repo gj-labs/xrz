@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BindLab XR</title>
+    <style>
+      :root { color-scheme: dark; --text: #f3f4f6; --teal: #2dd4bf; }
+      html, body { margin: 0; height: 100%; background: transparent; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+      body { background: #000; }
+      canvas { display: block; }
+      #enter {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: rgba(20, 24, 28, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+        cursor: pointer; z-index: 10; transition: opacity 240ms ease;
+      }
+      #enter.hidden { opacity: 0; pointer-events: none; }
+      #enter .card {
+        padding: 36px 48px; border-radius: 28px; background: rgba(20, 24, 28, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+        color: var(--text); font-weight: 600; font-size: 26px; letter-spacing: 0.01em; text-align: center;
+      }
+      #enter .card small { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; color: var(--teal); }
+      #status { position: fixed; left: 16px; bottom: 16px; font-size: 13px; color: #9ca3af; pointer-events: none; display: none; }
+      #status.debug { display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="enter"><div class="card"><span id="enter-title">Tap to enter BindLab XR</span><small id="enter-sub">Passthrough · hand tracking</small></div></div>
+    <div id="status"></div>
+    <script type="module" src="/src/xr.ts"></script>
+  </body>
+</html>
