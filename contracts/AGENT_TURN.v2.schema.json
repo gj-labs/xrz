@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/biobitworks/xrz/blob/main/contracts/AGENT_TURN.v2.schema.json",
+  "title": "XRZ agent-turn v2 with typed event kind",
+  "description": "Successor of AGENT_TURN.schema.json (v1 preserved). Structured event kind required; schema validity is not source attribution or model truth.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "event_id",
+    "actor",
+    "turn_id",
+    "repo",
+    "task_ref",
+    "sequence",
+    "status",
+    "input_occurrences",
+    "output_occurrences",
+    "evidence_refs",
+    "event_kind"
+  ],
+  "properties": {
+    "schema": {
+      "const": "xrz.agent_turn.v2"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor": {
+      "type": "string",
+      "enum": [
+        "COPILOT",
+        "CHATGPT",
+        "CLAUDE",
+        "HUMAN",
+        "ANDROID_MODEL",
+        "XR_MODEL",
+        "SYNTHETIC_COPILOT",
+        "OTHER"
+      ]
+    },
+    "turn_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_turn_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "EXECUTED",
+        "OBSERVED",
+        "FAILED",
+        "NOT_TESTED",
+        "SYNTHETIC"
+      ]
+    },
+    "instruction_blob_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "model_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "git_before": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "git_after": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_repository_commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tool_execution_receipt_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observation_context_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "input_occurrences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "output_occurrences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "human_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signed_receipt_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_action": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_kind": {
+      "type": "string",
+      "enum": [
+        "AGENT_REQUEST",
+        "INSTRUCTION_READ",
+        "SOURCE_READ",
+        "TOOL_INVOCATION",
+        "MODEL_INFERENCE",
+        "CODE_EDIT",
+        "TEST_EXECUTION",
+        "REVIEW_REQUEST",
+        "REVIEW_RESULT",
+        "HUMAN_DECISION",
+        "PR_CHANGE",
+        "FAILURE",
+        "OBSERVATION"
+      ]
+    }
+  }
+}

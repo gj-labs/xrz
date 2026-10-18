@@ -1,0 +1,20 @@
+{
+  "schema": "xrz.upstream_tracking.v1",
+  "upstream": "gj-labs/xrz",
+  "fork": "biobitworks/xrz",
+  "tracking_mode": "MANUAL_SNAPSHOT_NO_SCHEDULED_WATCH",
+  "observed_at_utc": "2026-10-17",
+  "upstream_main_readme_blob_sha": "59671294a56521db0bc994cc613e2498fc7dd101",
+  "fork_main_base_commit": "3fef2d21d463eeb312eb76b7d206518f5c3657dd",
+  "fork_handoff_branch": "handoff/mvp-custody-team-20261017",
+  "requirements": [
+    "Compare upstream main commit to last observed upstream SHA before any sync",
+    "Log upstream additions/deletions, author/commit, license and source provenance",
+    "Do not silently fast-forward or merge; first review rights and breaking contracts",
+    "Preserve original upstream commits and new fork successor commits",
+    "Recompute affected source/atom/transform hashes and custody receipts after an admitted upstream change",
+    "Open dedicated sync PR and include reproducible test/notebook receipts",
+    "Do not assert active monitoring until recurring watcher is created"
+  ],
+  "next_action": "Capture upstream HEAD SHA using GitHub commits endpoint; enable scheduled upstream-diff watch only with explicit user approval"
+}

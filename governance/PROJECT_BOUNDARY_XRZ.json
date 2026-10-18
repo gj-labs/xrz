@@ -1,0 +1,69 @@
+{
+  "schema": "xrz.project_boundary.v1",
+  "status": "PROPOSED_POLICY_SOURCE_COMMITTED_NOT_PRODUCTION_SIGNED",
+  "project_binding": {
+    "project_id": "XRZ",
+    "upstream_repo": "gj-labs/xrz",
+    "development_fork": "biobitworks/xrz",
+    "handoff_branch": "handoff/mvp-custody-team-20261017",
+    "upstream_status": "PULL_REQUEST_NOT_OPENED_GITHUB_INTEGRATION_FORBIDDEN",
+    "scope": [
+      "Samsung Galaxy S25 Ultra S Pen scientific UI",
+      "Samsung XR spatial visualization/sonification/haptics",
+      "public experimental protein structure references",
+      "on-device model evaluation",
+      "nonhazardous mock protocol observability",
+      "XRZ source/atom/occurrence/MMR receipts"
+    ]
+  },
+  "excluded_independent_project": {
+    "project_id": "ANTIGENCE_CLEANROOM",
+    "repository": "biobitworks/antigence",
+    "visibility": "private",
+    "existing_lineage": "DO_NOT_RECONSTRUCT_OR_MERGE",
+    "identities": "SEPARATE_PROJECT_CONTEXT_TRANSFORMATION_CHECKPOINT_SIGNATURE_RELEASE",
+    "scope": [
+      "Antigence anomaly/verification research",
+      "existing private governed evidence branches",
+      "existing Antigence clean-room receipts"
+    ],
+    "source_provenance": "NO_ANTIGENCE_SOURCE_IMPORTED_IN_XRZ"
+  },
+  "disposition_of_mistaken_xrz_pr": {
+    "url": "https://github.com/biobitworks/xrz/pull/2",
+    "head_branch": "feature/antigence-copilot-cleanroom-20261017",
+    "merge_state": "CLOSED_NOT_MERGED",
+    "status": "WITHDRAWN_SCOPE_MISMATCH",
+    "history": "PRESERVED_NO_REWRITE",
+    "eight_case_mock_protocol": "UNADMITTED_TO_BOTH_CANONICAL_PROJECTS"
+  },
+  "admission_constraints": [
+    "No automatic issue, branch, PR, data or artifact synchronization between XRZ and Antigence Clean Room",
+    "No use of Antigence private datasets, source, derived tensors, scientific results or confidential evidence in public XRZ",
+    "Never treat identical algorithm/content hashes as shared project context identity",
+    "Never copy one project's MMR peaks/root, signing status, scientific conclusions or reviewer approvals into the other",
+    "Cross-project reference permitted as a citation with original project/source identity, exact version, verified rights and no claim of imported evidence",
+    "Any implementation reuse requires a separate license and data-boundary review, specifically approved per-project source/occurrence mapping and independent recomputation",
+    "Do not merge XRZ staging PR #2 or import its mock-lab Antigence integration into either main",
+    "XRZ safety observer is advisory with human-authorized mock procedure; Antigence Clean Room is an independent security/evidence research line",
+    "Predecessor receipts and failed attempts remain separately addressable"
+  ],
+  "required_evidence_on_any_proposed_cross_project_export": [
+    "source_project_id",
+    "target_project_id",
+    "source_commit",
+    "source_artifact_and_license",
+    "content_hash",
+    "original_occurrence_id",
+    "target_context_id",
+    "rights_decision",
+    "reviewing_authority",
+    "recorded_decision",
+    "transformation_version",
+    "independent_verification_status"
+  ],
+  "verified_merkle_mmr_root": "NOT_COMPUTED",
+  "signature_state": "NOT_SIGNED",
+  "copilot_scope": "Repo-specific instructions; no agent can merge or promote cross-project artifacts by implication",
+  "next_action": "Maintain XRZ only in PR #1, Antigence Clean Room only in its existing private branch/PR lineage, and require explicit governed export intake before considering any reusable interface."
+}

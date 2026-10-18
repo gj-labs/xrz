@@ -1,0 +1,104 @@
+{
+  "schema": "xrz.review_findings_receipt.v1",
+  "repository": "biobitworks/xrz",
+  "pr": 1,
+  "observed_reviews": [
+    {
+      "actor": "chatgpt-codex-connector",
+      "review_id": "PRR_kwDOVN5Gls8AAAABS3NbGQ",
+      "submitted_at_utc": "2026-10-18T00:39:47Z",
+      "reviewed_commit": "e20e03f5d4a3044b856757b2acd25a509ad09d6f",
+      "signature_state": "UNKNOWN",
+      "content_sha256": "NOT_COMPUTED"
+    },
+    {
+      "actor": "copilot-pull-request-reviewer",
+      "review_id": "PRR_kwDOVN5Gls8AAAABS3Njaw",
+      "submitted_at_utc": "2026-10-18T00:40:41Z",
+      "reviewed_commit": "UNKNOWN_EXACT_SOURCE_COMMIT_IN_REVIEW_BODY",
+      "signature_state": "UNKNOWN",
+      "content_sha256": "NOT_COMPUTED"
+    }
+  ],
+  "findings": [
+    {
+      "from": "Codex",
+      "id": 4305152547,
+      "title": "Unsupported signed/committed claim accepted",
+      "severity": "P1",
+      "resolution": "Fail-closed check in reference_verify; regression tests",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Codex",
+      "id": 4305152549,
+      "title": "Incomplete AgentTurn admission/schema validation",
+      "severity": "P2",
+      "resolution": "Draft202012Validator and strict v2 schema shared by constructor and verifier",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Codex",
+      "id": 4305152550,
+      "title": "Forged empty checkpoint accepted",
+      "severity": "P2",
+      "resolution": "Reject empty verifier input, negative test",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Codex",
+      "id": 4305152553,
+      "title": "Whitespace parent SHA accepted",
+      "severity": "P2",
+      "resolution": "Exact lowercase 64-char hex validation in both paths, negative test",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Copilot",
+      "id": 4305154570,
+      "title": "Missing typed event-kind discriminator",
+      "severity": "MEDIUM",
+      "resolution": "Preserved v1 and added required event_kind in contracts/AGENT_TURN.v2.schema.json",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Copilot",
+      "id": 4305154584,
+      "title": "Missing citation and receipt edge vocabulary",
+      "severity": "MEDIUM",
+      "resolution": "Preserved v1 and added CITES, BUILDS_ON, USES_DATA_FROM, REPRODUCES, COMPARES_WITH, CORRECTS, CONTAINS_RECEIPT in contracts/FCO_FCG_v2.json",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Copilot",
+      "id": 4305154599,
+      "title": "Parent digest whitespace",
+      "severity": "MEDIUM",
+      "resolution": "Strict hex parser + tests (same defect as Codex)",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    },
+    {
+      "from": "Copilot",
+      "id": 4305154610,
+      "title": "Schema invalid and empty events on replay",
+      "severity": "MEDIUM",
+      "resolution": "Use same versioned schema and nonempty restriction for construction and replay",
+      "status": "IMPLEMENTED_TESTED_REREVIEW_PENDING"
+    }
+  ],
+  "predecessor": {
+    "turn_checkpoint": "evidence/synthetic_agent_turn_receipt.json",
+    "root": "0fc4c6332e1c1831036193a6d66b235e7b2fc5893908dd49c880a32fb234166c"
+  },
+  "successor": {
+    "turn_checkpoint": "evidence/synthetic_agent_turn_receipt_v2.json",
+    "root": "d459eb5b1c36a67b8637a4897e6201ae5e8dff7ccd47e03434a792b1968e0049"
+  },
+  "observed_ci": {
+    "run_id": 39083969237,
+    "conclusion": "success",
+    "verified_scope": "unit tests and full notebook on GitHub-hosted job; synthetic events only"
+  },
+  "claim_limits": "The reviewed fixes and CI are real Github observations, but no Copilot coding-agent execution, signature, BSL-2 approval, two-host independent verifier or production root is established.",
+  "next_action": "Request new Copilot/Codex review for v2 successor, human assess any remaining issues, compute independent L2 review-state checkpoint from preserved exact review bodies and GitHub event receipts."
+}

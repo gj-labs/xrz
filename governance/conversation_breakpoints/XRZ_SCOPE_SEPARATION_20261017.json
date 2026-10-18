@@ -1,0 +1,106 @@
+{
+  "schema": "xrz.conversation_fco_breakpoint.v1",
+  "transition_id": "XRZ-SCOPE-SEPARATION-20261017-001",
+  "project_id": "XRZ",
+  "project_repo": "biobitworks/xrz",
+  "upstream_repo": "gj-labs/xrz",
+  "date_local": "2026-10-17",
+  "parent_state": {
+    "xrzhandoff_pr": 1,
+    "prior_handoff_branch_head": "80f2e640de771dbea885c3542110943d23961928",
+    "erroneous_successor_pr": 2,
+    "erroneous_successor_head": "3d2a43fa2be7fd6cf1dc34b21515efc1ba024a39",
+    "erroneous_pr_state_before": "OPEN_SCOPE_MISMATCH"
+  },
+  "decision": "KEEP_XRZ_AND_ANTIGENCE_CLEANROOM_DISTINCT",
+  "transition_events": [
+    {
+      "kind": "GITHUB_PR_COMMENT",
+      "repo": "biobitworks/xrz",
+      "pr": 2,
+      "url": "https://github.com/biobitworks/xrz/pull/2#issuecomment-6244461731",
+      "purpose": "Record separation decision and historical predecessor"
+    },
+    {
+      "kind": "GITHUB_PR_CLOSED",
+      "repo": "biobitworks/xrz",
+      "pr": 2,
+      "result": "CLOSED_NOT_MERGED",
+      "head": "3d2a43fa2be7fd6cf1dc34b21515efc1ba024a39"
+    },
+    {
+      "kind": "XRZ_GOVERNANCE_SUCCESSOR",
+      "repo": "biobitworks/xrz",
+      "path": "governance/PROJECT_BOUNDARY_XRZ.json",
+      "branch": "handoff/mvp-custody-team-20261017",
+      "predecessor_ref": "80f2e640de771dbea885c3542110943d23961928"
+    },
+    {
+      "kind": "XRZ_TESTED_POLICY",
+      "repo": "biobitworks/xrz",
+      "test_file": "tests/test_project_boundary.py",
+      "commit": "c2bf2d216e6bbfb998ec4bb70caa64fa9897cf32",
+      "ci_run_id": 39088337953,
+      "ci_result": "SUCCESS"
+    },
+    {
+      "kind": "XRZ_PR_UPDATED",
+      "repo": "biobitworks/xrz",
+      "pr": 1,
+      "result": "OPEN_REVIEW_READY_MERGEABLE",
+      "scope": "XRZ_ONLY"
+    }
+  ],
+  "independent_project": {
+    "project_id": "ANTIGENCE_CLEANROOM",
+    "repo": "biobitworks/antigence",
+    "visibility": "PRIVATE",
+    "original_prs": [
+      {
+        "pr": 6,
+        "state": "OPEN_DRAFT_NOT_MERGED",
+        "head": "4bed128c72190a911e536d623c5da8bd4a78bb7f"
+      },
+      {
+        "pr": 8,
+        "state": "OPEN_DRAFT_NOT_MERGED",
+        "head": "d72a9719794afcb9dd11f85ddd1be5c293acb002"
+      }
+    ],
+    "touched_in_transition": false,
+    "canonical_state": "NO_CHANGES_MADE_FROM_XRZ"
+  },
+  "claims": [
+    "Source-code scopes and governance identities must be kept distinct",
+    "Original mistaken branch and comments are preserved as historical unadmitted evidence",
+    "No Antigence clean-room outputs/models/custody roots were imported into XRZ in this correction"
+  ],
+  "not_tested": [
+    "Actual Samsung XR, S25 and BSL-2 scientific validation",
+    "Production enforcement of cross-project export admission in independent hosts",
+    "Institutional biosafety approval",
+    "Any attempted merge of XRZ into gj-labs/xrz"
+  ],
+  "failures": [
+    {
+      "type": "PREDECESSOR_SCOPE_ERROR",
+      "detail": "Antigence-specific clean-room mock protocol was created as stacked XRZ PR #2 and is now closed unmerged; preserve predecessor state"
+    }
+  ],
+  "rights_and_custody": {
+    "content_identity": "git tracked artifact bytes",
+    "occurrence_identity": "this XRZ-only project transition; not Antigence",
+    "graph_edges": [
+      "SUPERSEDES_SCOPE_PROPOSAL",
+      "REVIEWED_BY"
+    ],
+    "causality_proof": "NOT_TESTED",
+    "merkle_root": "NOT_COMPUTED",
+    "mmr_committed": false,
+    "signing_status": "NOT_SIGNED",
+    "provenance_unknowns": [
+      "Exact authenticated parent MMR release root remains unknown"
+    ]
+  },
+  "next_action": "Review and merge XRZ handoff only with XRZ maintainer; continue Antigence Clean Room only under biobitworks/antigence's separate established private governance and do not merge XRZ PR #2."
+}

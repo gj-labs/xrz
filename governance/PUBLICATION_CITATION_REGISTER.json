@@ -1,0 +1,70 @@
+{
+  "schema": "xrz.publication_register.v1",
+  "status": "PARTIAL_UNVERIFIED",
+  "policy": "Never invent DOI, authorship, publication year, venue, peer review, citation count, or priority date",
+  "records": [
+    {
+      "id": "PUB-XRZ-HETERODOX-001",
+      "kind": "external_research",
+      "title": "Scientific Epistemology",
+      "url": "https://www.heterodoxresearch.org/research/scientific-epistemology",
+      "authors": null,
+      "doi": null,
+      "version": null,
+      "verification": "BIBLIOGRAPHIC_METADATA_PENDING",
+      "rights": "COPY_PERMISSION_UNKNOWN",
+      "usage": "conceptual precedent for procedural observability; citation required"
+    },
+    {
+      "id": "PUB-XRZ-PDB-3HS4",
+      "kind": "experimental_structure",
+      "title": "Human carbonic anhydrase II and acetazolamide structure",
+      "url": "https://www.rcsb.org/structure/3HS4",
+      "doi": "10.2210/pdb3HS4/pdb",
+      "version": "PDB_3HS4",
+      "verification": "REFERENCE_ONLY",
+      "usage": "experimental coordinate ground truth"
+    },
+    {
+      "id": "PUB-XRZ-PDB-4IWZ",
+      "kind": "experimental_structure",
+      "title": "Human carbonic anhydrase II and inhibitor derivative structure",
+      "url": "https://www.rcsb.org/structure/4IWZ",
+      "doi": "10.2210/pdb4IWZ/pdb",
+      "version": "PDB_4IWZ",
+      "verification": "REFERENCE_ONLY",
+      "usage": "experimental coordinate comparator"
+    },
+    {
+      "id": "PUB-USER-PREPRINT-REGISTER",
+      "kind": "author_preprints",
+      "title": null,
+      "authors": null,
+      "doi": null,
+      "arxiv_id": null,
+      "openreview_id": null,
+      "zenodo_id": null,
+      "version": null,
+      "canonical_url": null,
+      "verification": "REQUIRES_AUTHORITATIVE_IDENTIFIERS",
+      "usage": "Add each verified preprint and distinct versions with exact evidence links, before claims of citation completeness"
+    }
+  ],
+  "citation_edges": [
+    "CITES",
+    "BUILDS_ON",
+    "COMPARES_WITH",
+    "USES_DATA_FROM",
+    "REPRODUCES",
+    "CORRECTS",
+    "SUPERSEDES"
+  ],
+  "publication_rules": [
+    "Every figure/table/equation/caption/citation is an independently addressable atom where feasible",
+    "Do not confuse same text/content with the occurrence of a citation in a particular preprint/version",
+    "CITES means declared attribution, not priority or causal contribution",
+    "Preserve exact page/section/figure, quote boundaries, version, DOI and archived retrieval receipt",
+    "Preprint is not peer-reviewed unless separately evidenced",
+    "No paper PDF redistribution absent rights review"
+  ]
+}

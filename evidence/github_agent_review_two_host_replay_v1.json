@@ -1,0 +1,30 @@
+{
+  "schema": "xrz.github_agent_review_two_host_replay.v1",
+  "state": "OBSERVED_GITHUB_ACTIONS_TWO_RUNNER_REPLAY",
+  "repository": "biobitworks/xrz",
+  "pr": 1,
+  "head_commit": "42f5845d0ec223b8632b776a6071cde5adf34122",
+  "workflow_run_id": 39084950708,
+  "workflow_url": "https://github.com/biobitworks/xrz/actions/runs/39084950708",
+  "hosts": [
+    {
+      "runner": "ubuntu-latest",
+      "job_id": 117549438866,
+      "result": "SUCCESS"
+    },
+    {
+      "runner": "ubuntu-22.04",
+      "job_id": 117549439164,
+      "result": "SUCCESS"
+    }
+  ],
+  "source_snapshot_sha256": "3ae8b50bfcb856403ac9654bebee051a0955f48a803580d98d2bd2c6de99b0bf",
+  "frozen_reference_receipt": "evidence/github_agent_review_l1_mmr_receipt_v1.json",
+  "verified_replayed_root": "e6fe76c0b5baaac578c42d8920b9ac0b221ecd4db02dc9d672fdfc426a05b449",
+  "verification": "Both distinct GitHub hosted Linux job executions ran unit suite+Jupyter notebook+review source script, which independently recomputes typed eight real review comment leaves and tests equality with frozen receipt ordered leaves/peaks/root",
+  "scope_limits": "Two GitHub-hosted runners running SAME versioned Python implementation, with local iterative and recursive algorithms. This is cross-host deterministic replay, not independent codebase formal verification, authenticated signer identity, hardware secure enclave attestation or a complete production MMR consistency proof.",
+  "source_authenticity": "OBSERVED_GITHUB_API_NO_CRYPTOGRAPHIC_REVIEWER_SIGNATURE",
+  "signing_status": "NOT_SIGNED",
+  "production_mmr_status": "NOT_COMMITTED",
+  "next_action": "Approve human governance and integrate genuine Copilot coding-agent input/output tool receipts as additional typed FCO events, then independent successor L2 PR checkpoint."
+}

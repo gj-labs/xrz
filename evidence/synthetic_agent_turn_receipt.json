@@ -1,0 +1,38 @@
+{
+  "schema": "xrz.synthetic_agent_turn_reference_receipt.v1",
+  "source_kind": "SYNTHETIC_TEST_FIXTURE",
+  "actor": "SYNTHETIC_COPILOT",
+  "software_source": "custody/agent_turn_mmr.py",
+  "notebook": "notebooks/00_agent_turn_merkle_breakpoints.ipynb",
+  "algorithm": "xrz-domain-separated-mmr-v1",
+  "canonicalization": "xrz-json-v1",
+  "leaf_count": 3,
+  "ordered_leaf_hashes": [
+    "b2292b0f6a251f0ebb1a2bbbe4b00342b73697408479d155007cdc698907c5ea",
+    "10e63dd5d23415b08b8515d28c87f03a08070164589d25e6797447c7482a5ae2",
+    "60d392d940b0e2406556a9bf61b9a2a837e789af74c8a01ff7b7f307a8894966"
+  ],
+  "peaks": [
+    {
+      "height": 1,
+      "hash": "95d6a82614fa87c050f9ccfdec9916a8ea6805673b06e0b0e9037a8d387ff5d7"
+    },
+    {
+      "height": 0,
+      "hash": "60d392d940b0e2406556a9bf61b9a2a837e789af74c8a01ff7b7f307a8894966"
+    }
+  ],
+  "root": "0fc4c6332e1c1831036193a6d66b235e7b2fc5893908dd49c880a32fb234166c",
+  "parent_checkpoint_note": "Synthetic parent bytes=0xab repeated 32 times; no verified predecessor record exists",
+  "github_ci": {
+    "run_id": 39083495087,
+    "url": "https://github.com/biobitworks/xrz/actions/runs/39083495087",
+    "result": "PASS",
+    "verified_scope": "GitHub-hosted Python unit tests and one Jupyter execution; not a two-host MMR attestation"
+  },
+  "signature_state": "NOT_SIGNED",
+  "merkle_commitment_state": "REFERENCE_COMPUTED_NOT_PRODUCTION_COMMITTED",
+  "real_copilot_execution": "NOT_OBSERVED",
+  "project_root": "NOT_COMPUTED",
+  "next_action": "Obtain actual Copilot review source receipt and independently reconstruct typed successor checkpoint"
+}

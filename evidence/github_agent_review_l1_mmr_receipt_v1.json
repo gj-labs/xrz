@@ -1,0 +1,113 @@
+{
+  "schema": "xrz.github_agent_review_mmr_receipt.v1",
+  "observation_state": "OBSERVED_GITHUB_HOSTED_SINGLE_RUN",
+  "source_snapshot_file": "evidence/github_review_comments_snapshot_v1.json",
+  "source_snapshot_sha256": "3ae8b50bfcb856403ac9654bebee051a0955f48a803580d98d2bd2c6de99b0bf",
+  "source_comment_atoms": [
+    {
+      "body_bytes": 644,
+      "body_sha256": "4ba49e33728b303d00891d1224a406cf1ad58e3942d0b8c61653381957902743",
+      "github_comment_id": 4305152547,
+      "occurrence_id": "github-pr-comment:4305152547",
+      "review_actor_login": "chatgpt-codex-connector[bot]",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152547"
+    },
+    {
+      "body_bytes": 732,
+      "body_sha256": "aac4ffe13ef1a2d177f42ff12ada730c943f0c950a64195ec77eb150de2638f3",
+      "github_comment_id": 4305152549,
+      "occurrence_id": "github-pr-comment:4305152549",
+      "review_actor_login": "chatgpt-codex-connector[bot]",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152549"
+    },
+    {
+      "body_bytes": 600,
+      "body_sha256": "9a43bde99af2a4868b3149c5024085b63793b30544dbae54340bcd78f4e4bc86",
+      "github_comment_id": 4305152550,
+      "occurrence_id": "github-pr-comment:4305152550",
+      "review_actor_login": "chatgpt-codex-connector[bot]",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152550"
+    },
+    {
+      "body_bytes": 689,
+      "body_sha256": "8df7237ddd5d66f74f9d699a89d6084f46b329c9f3ed18df5347932823a4e5f3",
+      "github_comment_id": 4305152553,
+      "occurrence_id": "github-pr-comment:4305152553",
+      "review_actor_login": "chatgpt-codex-connector[bot]",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305152553"
+    },
+    {
+      "body_bytes": 561,
+      "body_sha256": "30bb7321d99af21797e455921767aa8a798928fc09d1f079a64054707abd0859",
+      "github_comment_id": 4305154570,
+      "occurrence_id": "github-pr-comment:4305154570",
+      "review_actor_login": "Copilot",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154570"
+    },
+    {
+      "body_bytes": 383,
+      "body_sha256": "c156f175b2c09a6f402c785c840ec8c1d34d03c3c5d050c93e6ed0208f3a5a57",
+      "github_comment_id": 4305154584,
+      "occurrence_id": "github-pr-comment:4305154584",
+      "review_actor_login": "Copilot",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154584"
+    },
+    {
+      "body_bytes": 570,
+      "body_sha256": "3fbf1c357b710b741f16e0da16a469e0d3c8c09117d19c6f8d3eda187647224d",
+      "github_comment_id": 4305154599,
+      "occurrence_id": "github-pr-comment:4305154599",
+      "review_actor_login": "Copilot",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154599"
+    },
+    {
+      "body_bytes": 703,
+      "body_sha256": "cc1a378283979526404e71a045725935e5a969322fec7bb00b7861e58d53a5a9",
+      "github_comment_id": 4305154610,
+      "occurrence_id": "github-pr-comment:4305154610",
+      "review_actor_login": "Copilot",
+      "source_url": "https://github.com/biobitworks/xrz/pull/1#discussion_r4305154610"
+    }
+  ],
+  "verification_run": {
+    "id": 39084357995,
+    "url": "https://github.com/biobitworks/xrz/actions/runs/39084357995",
+    "source_commit": "30321cf6884dac15902c7277cb46d4bffa82f7c6",
+    "result": "SUCCESS",
+    "algorithm_verification": "PASS_SINGLE_HOST_DUAL_ALGORITHM",
+    "negative_test": "ALTERED_REVIEW_BODY_HASH_REJECTED"
+  },
+  "mmr": {
+    "algorithm": "xrz-domain-separated-mmr-v1",
+    "canonicalization": "xrz-json-v1",
+    "event_count": 8,
+    "ordered_leaf_hashes": [
+      "b13c1274462e16515980bd19439638c6e862e51abeb18bbc6c3051e489c8621e",
+      "27212054b2fe9eb22ecc46234bf414a41a43d6c75cbecce9927c839fe5def7c4",
+      "84c0f88cad6356d728abf050797322af3770b8dc8fc7b1a29ac00ced2804e2e9",
+      "64ba225d4e4d71733a0548c0ae6e23faee671066b3b0384adb250a64f9927f2b",
+      "6c0d241d1a5feb91101a6012f07ca234d52842983e1d4c6afc6bdc482778de1b",
+      "10ba696cf0ed49c1da43932edea7ff69d4e54f15286674b5854e0eddfc1e209a",
+      "587be096744650ab3a8aaf8c966d1fcda63a7a4bbe2e4d3b77d7c00c1e6fb117",
+      "d04e7af0f5b03fd438217d67eaac25a843cde68885279b5544a82f35913e8edd"
+    ],
+    "parent_checkpoint": null,
+    "peaks": [
+      {
+        "hash": "64869347cc19274a9c5c0a3ee17738ae9735107b35edf6757e61e1eddcdca865",
+        "height": 3
+      }
+    ],
+    "root": "e6fe76c0b5baaac578c42d8920b9ac0b221ecd4db02dc9d672fdfc426a05b449",
+    "schema": "xrz.agent_turn_mmr_checkpoint.v1",
+    "signature_state": "NOT_SIGNED",
+    "state": "COMPUTED_NOT_EXTERNAL_ATTESTED",
+    "verification": "NOT_TESTED"
+  },
+  "scope": "Exact bytes of eight GitHub Copilot and Codex original inline review comments as snapshotted and hashed; no other model/tool turns",
+  "source_attribution": "GitHub PR comments (public API observations), not cryptographically signed reviewer payload",
+  "signing_status": "NOT_SIGNED",
+  "production_mmr_status": "NOT_COMMITTED",
+  "copilot_coding_agent_execution": "NOT_TESTED",
+  "next_action": "Independently reconstruct from a second host, verify parent/release admissions, then commit separately reviewed real L2 project checkpoint."
+}
