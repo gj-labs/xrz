@@ -70,7 +70,20 @@ data class RunSummary(
 
 data class RunEvent(val kind: String, val ts: Double, val payload: JSONObject)
 
-data class RunDetail(val summary: RunSummary, val chainOk: Boolean, val events: List<RunEvent>)
+data class RunDetail(
+    val summary: RunSummary,
+    val chainOk: Boolean,
+    val events: List<RunEvent>,
+    val steps: List<ProtocolStep> = emptyList(),
+) {
+    /** Protocol step under review while the run is in a `STEP_n` state; null otherwise. */
+    val currentStep: ProtocolStep? get() = if (summary.state.startsWith("STEP_")) steps.getOrNull(summary.stepIndex) else null
+}
+
+data class StepReviewRequest(val stepId: String, val reviewer: String, val note: String, val accepted: Boolean) {
+    fun toJson(): JSONObject = JSONObject()
+        .put("step_id", stepId).put("reviewer", reviewer).put("note", note).put("accepted", accepted)
+}
 
 data class LabStepRequest(
     val runId: String,
@@ -115,10 +128,14 @@ class BackendClient(private val baseUrl: () -> String, private val http: OkHttpC
             val e = ev!!.getJSONObject(i)
             RunEvent(e.optString("kind"), e.optDouble("ts", 0.0), e.optJSONObject("payload") ?: JSONObject())
         }
-        return RunDetail(RunSummary.fromJson(o), o.optBoolean("chain_ok", false), events)
+        val steps = ServerMessage.parseSteps(o.optJSONObject("protocol")?.optJSONArray("steps"))
+        return RunDetail(RunSummary.fromJson(o), o.optBoolean("chain_ok", false), events, steps)
     }
 
     suspend fun labHandoff(runId: String): JSONObject = post("/lab/handoff/$runId", JSONObject())
+
+    /** Human review of the current step; an accepted review advances the run (see CUSTODY.md). */
+    suspend fun reviewStep(runId: String, r: StepReviewRequest): JSONObject = post("/lab/review/$runId", r.toJson())
 
     /** Generates the evidence PDF; returns the server-relative PDF path. */
     suspend fun postEvidence(runId: String): String = post("/evidence/$runId", JSONObject()).optString("pdf", "/evidence/$runId.pdf")

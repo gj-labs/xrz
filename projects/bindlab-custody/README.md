@@ -49,7 +49,11 @@ Then open `http://localhost:8000/xr.html` in the Galaxy XR browser and tap **Sta
 ## API (contract shared with the Android apps)
 
 - `POST /bench` · `POST /binding` → `{run_id, state}` · `POST /lab/handoff/{run}` · `POST /lab/enter/{run}`
-- `POST /lab/step {run_id, step_id, status: passed|anomaly, detections, snapshot_b64}`
+  - Handoff also enters the lab (`SENT_TO_LAB → LAB_ENTERED → STEP_1`, protocol broadcast) and, with
+    `BINDLAB_XR_USB=1`, launches the headset lab app over adb (`launched` flag; failures never fail the handoff).
+    Repeating it on a run already in `STEP_n` rebroadcasts protocol + state so the headset resyncs.
+- `POST /lab/step {run_id, step_id, status: passed|anomaly, detections, snapshot_b64}` (records a claim; never advances)
+- `POST /lab/review/{run} {step_id, reviewer, note, accepted}` — the phone's Accept advances to the next step
 - `POST /approve/{run}` · `POST /evidence/{run}` · `POST /patent/{run}` · `GET /evidence/{run}.pdf` · `GET /patent/{run}.pdf`
 - `WS /ws?client=phone|xr|web`
   - Server → client: `state`, `protocol`, `beam`, `haptic`, `anomaly`

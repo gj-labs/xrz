@@ -17,6 +17,7 @@ import com.bindlab.shared.net.ConfigStore
 import com.bindlab.shared.net.RunDetail
 import com.bindlab.shared.net.RunSummary
 import com.bindlab.shared.net.ServerMessage
+import com.bindlab.shared.net.StepReviewRequest
 import com.bindlab.shared.net.WsClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -126,6 +127,8 @@ class PhoneViewModel(app: Application) : AndroidViewModel(app) {
     /** Run selected for the Review screen. */
     val reviewRunId = MutableStateFlow<String?>(null)
     val review = MutableStateFlow<ReviewUi>(ReviewUi())
+    /** Self-asserted reviewer name for POST /lab/review (persisted in SharedPreferences). */
+    val reviewer = MutableStateFlow(config.getString(KEY_REVIEWER, ""))
 
     val modelDir: String get() = ModelStore.primaryDir(ctx).absolutePath
 
@@ -144,6 +147,8 @@ class PhoneViewModel(app: Application) : AndroidViewModel(app) {
                         if (binding.value.runId == m.runId && binding.value.xrPhase == XrPhase.Waiting) {
                             binding.update { it.copy(xrPhase = XrPhase.Confirmed) }
                         }
+                        // The headset just passed / the hub advanced a step: keep the open review current.
+                        if (reviewRunId.value == m.runId) refreshReview()
                     }
                     else -> Unit
                 }
@@ -386,18 +391,45 @@ class PhoneViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val r = runCatching { backend.labHandoff(id) }
             binding.update { it.copy(labPhase = r.fold({ "sent" }, { e -> "failed:${e.message}" })) }
-            if (r.isSuccess) { runState.value = "SENT_TO_LAB"; refreshRuns() }
+            // The hub now enters the lab on handoff, so the response state is already STEP_1.
+            r.getOrNull()?.let { runState.value = it.optString("state").ifEmpty { "SENT_TO_LAB" }; refreshRuns() }
         }
     }
 
     // ------------------------------------------------------------------ review
 
+    fun setReviewer(name: String) {
+        reviewer.value = name
+        config.putString(KEY_REVIEWER, name.trim())
+    }
+
     fun openReview(id: String) {
         reviewRunId.value = id
         review.value = ReviewUi(loading = true)
+        refreshReview()
+    }
+
+    private fun refreshReview() {
+        val id = reviewRunId.value ?: return
         viewModelScope.launch {
-            review.value = runCatching { backend.getRun(id) }
-                .fold({ ReviewUi(detail = it) }, { ReviewUi(error = it.message ?: "failed to load run") })
+            runCatching { backend.getRun(id) }.fold(
+                { d -> review.update { it.copy(loading = false, detail = d, error = null) } },
+                { e -> review.update { it.copy(loading = false, error = e.message ?: "failed to load run") } },
+            )
+        }
+    }
+
+    /** Accept or reject the step currently under review; the hub advances the run only on accept. */
+    fun reviewStep(accepted: Boolean, note: String) {
+        val id = reviewRunId.value ?: return
+        val step = review.value.detail?.currentStep ?: return
+        val who = reviewer.value.trim().ifEmpty { "phone" }
+        val text = note.trim().ifEmpty { if (accepted) "Accepted on phone review" else "Rejected on phone review" }
+        review.update { it.copy(reviewing = true, error = null) }
+        viewModelScope.launch {
+            val r = runCatching { backend.reviewStep(id, StepReviewRequest(step.id, who, text, accepted)) }
+            review.update { it.copy(reviewing = false, error = r.exceptionOrNull()?.message) }
+            if (r.isSuccess) { refreshReview(); refreshRuns() }
         }
     }
 
@@ -416,6 +448,7 @@ class PhoneViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val KEY_INFLIGHT = "inflight"
+        private const val KEY_REVIEWER = "reviewer"
         private const val XR_WAIT_MS = 6_000L
         /** Demo complex served by the backend; sent as structure_ref with every binding. */
         const val STRUCTURE_REF = "demo_complex"
@@ -428,4 +461,5 @@ data class ReviewUi(
     val detail: RunDetail? = null,
     val error: String? = null,
     val exporting: Boolean = false,
+    val reviewing: Boolean = false,
 )

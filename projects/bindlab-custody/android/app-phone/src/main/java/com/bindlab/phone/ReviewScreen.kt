@@ -31,6 +31,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +53,7 @@ import com.bindlab.phone.ui.BindLabColors
 import com.bindlab.phone.ui.CardShape
 import com.bindlab.phone.ui.Pill
 import com.bindlab.phone.ui.StageChip
+import com.bindlab.shared.net.ProtocolStep
 import com.bindlab.shared.net.RunEvent
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -59,6 +62,7 @@ import java.util.Locale
 @Composable
 fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
     val ui by vm.review.collectAsState()
+    val reviewer by vm.reviewer.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(runId) { vm.openReview(runId) }
     val detail = ui.detail
@@ -82,6 +86,7 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
         }
 
         Box(Modifier.weight(1f)) {
+            val step = detail?.currentStep
             when {
                 ui.loading -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     CircularProgressIndicator()
@@ -92,8 +97,15 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
                     ui.error ?: "", color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(20.dp),
                 )
-                detail.events.isEmpty() -> Text(stringResource(R.string.review_empty), modifier = Modifier.padding(20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                detail.events.isEmpty() && step == null -> Text(stringResource(R.string.review_empty), modifier = Modifier.padding(20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 else -> LazyColumn(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp)) {
+                    if (step != null) item(key = "step:${step.id}") {
+                        StepReviewCard(
+                            step, index = detail.summary.stepIndex, total = detail.steps.size,
+                            reviewer = reviewer, onReviewer = vm::setReviewer,
+                            busy = ui.reviewing, onDecision = vm::reviewStep,
+                        )
+                    }
                     itemsIndexed(detail.events) { i, e -> TimelineRow(e, last = i == detail.events.lastIndex) }
                 }
             }
@@ -110,6 +122,50 @@ fun ReviewScreen(vm: PhoneViewModel, runId: String, onBack: () -> Unit, modifier
                 enabled = detail != null && !ui.exporting,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
             ) { Text(if (ui.exporting) "…" else stringResource(R.string.export_evidence), style = MaterialTheme.typography.titleMedium) }
+        }
+    }
+}
+
+/** Current protocol step with Accept / Reject. Accept is what advances the headset (POST /lab/review). */
+@Composable
+private fun StepReviewCard(
+    step: ProtocolStep,
+    index: Int,
+    total: Int,
+    reviewer: String,
+    onReviewer: (String) -> Unit,
+    busy: Boolean,
+    onDecision: (accepted: Boolean, note: String) -> Unit,
+) {
+    var note by rememberSaveable(step.id) { mutableStateOf("") }
+    Card(
+        shape = CardShape,
+        colors = CardDefaults.cardColors(containerColor = BindLabColors.Amber.copy(alpha = 0.12f)),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+    ) {
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(stringResource(R.string.review_step_n, index + 1, total), style = MaterialTheme.typography.labelLarge, color = BindLabColors.Amber)
+            Text(step.title, style = MaterialTheme.typography.titleMedium)
+            if (step.instruction.isNotEmpty()) Text(step.instruction, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (step.required.isNotEmpty()) Text(stringResource(R.string.review_requires, step.required.joinToString()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedTextField(
+                value = reviewer, onValueChange = onReviewer, singleLine = true,
+                label = { Text(stringResource(R.string.reviewer)) }, modifier = Modifier.fillMaxWidth(),
+            )
+            OutlinedTextField(
+                value = note, onValueChange = { note = it }, minLines = 2,
+                label = { Text(stringResource(R.string.review_note)) }, modifier = Modifier.fillMaxWidth(),
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(
+                    onClick = { onDecision(false, note) }, enabled = !busy,
+                    modifier = Modifier.weight(1f).height(48.dp),
+                ) { Text(stringResource(R.string.reject)) }
+                Button(
+                    onClick = { onDecision(true, note) }, enabled = !busy,
+                    modifier = Modifier.weight(1f).height(48.dp),
+                ) { Text(if (busy) "…" else stringResource(R.string.accept)) }
+            }
         }
     }
 }

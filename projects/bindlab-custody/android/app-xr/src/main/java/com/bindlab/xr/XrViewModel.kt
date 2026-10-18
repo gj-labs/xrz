@@ -102,7 +102,7 @@ class XrViewModel(app: Application) : AndroidViewModel(app) {
     // ---- settings
     val showDetections = MutableStateFlow(config.getString("show_dets", "on") == "on")
     /** Developer mode: no holds, no review wait, "Next" always advances locally. For walking through steps. */
-    val devMode = MutableStateFlow(config.getString("dev_mode", "on") == "on")
+    val devMode = MutableStateFlow(config.getString("dev_mode", "off") == "on")
 
     @Volatile private var lastFrame: Bitmap? = null
     private var lastWsSend = 0L

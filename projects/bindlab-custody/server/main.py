@@ -7,11 +7,14 @@ LAN demo:      python -m uvicorn main:app --host 0.0.0.0 --port 8000 --ws-max-si
                IPv4, so phones/headsets know which address to point at.
 
 Environment: BINDLAB_DB / BINDLAB_CUSTODY_DB override the SQLite paths (see simulate.py --fresh-db).
+             BINDLAB_PORT is the port this hub listens on (default 8011); with BINDLAB_XR_USB=1 it is
+             added to the `adb reverse` set so the headset reaches the hub as localhost.
 """
 import socket
 import uuid
 import os
 import asyncio
+import contextlib
 import json
 from urllib.parse import urlencode
 from pathlib import Path
@@ -30,6 +33,10 @@ import lab_handoff
 import workflow as wf
 
 ROOT = Path(__file__).parent.parent
+OWN_PORT = int(os.environ.get("BINDLAB_PORT", "8011"))
+XR_SOC = "SXR2230P"
+XR_REVERSE_PORTS = (8000, 8080)
+XR_LAB_ACTIVITY = "com.bindlab.xr/.MainActivity"
 
 app = FastAPI(title="BindLab XR")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -77,14 +84,19 @@ def load_run(run_id: str) -> dict:
     if run is None:
         raise HTTPException(404, f"run {run_id} not found")
     # Recover the legacy UI projection after a crash between journal commit and state broadcast.
+    # (A plain count, not a verified export: this runs on every request and export is O(n^2).)
     if run["state"].startswith("STEP_"):
-        graph = custody.export(run_id)
-        count = sum(n.get("event_type") == "Review" and n["payload"]["accepted"]
-                    for n in graph["nodes"] if "payload" in n)
+        count = custody.accepted_reviews(run_id)
         if count > run["step_index"]:
             state = "APPROVAL" if count == len(wf.PROTOCOL["steps"]) else wf.step_state(count)
             run = db.update_run(run_id, state=state, step_index=count)
     return run
+
+
+async def journal(run_id: str, kind: str, payload: dict, photo: bytes | None = None) -> dict:
+    """custody.append off the event loop: it re-verifies and re-hashes the whole run on every call,
+    which otherwise stalls websocket pings for seconds once a run has a few hundred observations."""
+    return await asyncio.to_thread(custody.append, run_id, wf.PROTOCOL, kind, payload, photo)
 
 
 def guard(run: dict, *allowed: str) -> None:
@@ -119,6 +131,20 @@ def lan_ip() -> str | None:
 async def ws_endpoint(ws: WebSocket, client: str = "web"):
     await ws.accept()
     hub.clients[ws] = client
+    journaling: asyncio.Task | None = None
+
+    async def journal_detections(msg: dict) -> None:
+        try:
+            receipt = await journal(msg["run_id"], "Observation", {
+                "step_id": msg["step_id"], "detections": custody.measurements(msg["detections"]),
+                "sender_claim": client, "capture_provenance": "UNVERIFIED"})
+            await hub.send({**msg, "from": client, "custody": receipt}, to={"web"})
+            await ws.send_json({"type": "custody_ack", **receipt})
+        except (ValueError, KeyError, TypeError, HTTPException) as exc:
+            await ws.send_json({"type": "custody_rejected", "reason": str(exc)})
+        except Exception:
+            pass  # socket went away mid-append; the journal row (if any) is already committed
+
     try:
         while True:
             msg = await ws.receive_json()
@@ -130,13 +156,15 @@ async def ws_endpoint(ws: WebSocket, client: str = "web"):
                     step = wf.current_step(run["step_index"])
                     if not step or step["id"] != msg["step_id"]:
                         raise ValueError("out-of-order step")
-                    receipt = custody.append(msg["run_id"], wf.PROTOCOL, "Observation", {
-                        "step_id": msg["step_id"], "detections": custody.measurements(msg["detections"]),
-                        "sender_claim": client, "capture_provenance": "UNVERIFIED"})
-                    await hub.send({**msg, "from": client, "custody": receipt}, to={"web"})
-                    await ws.send_json({"type": "custody_ack", **receipt})
                 except (ValueError, KeyError, TypeError, HTTPException) as exc:
                     await ws.send_json({"type": "custody_rejected", "reason": str(exc)})
+                    continue
+                # Back-pressure: journaling replays the whole run (O(n^2)); a frame that arrives while
+                # the previous one is still being appended is dropped rather than queued.
+                if journaling is None or journaling.done():
+                    journaling = asyncio.create_task(journal_detections(msg))
+                else:
+                    await ws.send_json({"type": "custody_rejected", "reason": "receiver busy; frame dropped"})
             elif kind == "haptic":
                 await hub.send(msg, to={"phone", "xr"} - {client})
     except WebSocketDisconnect:
@@ -198,14 +226,87 @@ async def post_binding(b: Binding):
     return {"run_id": run_id, "state": run["state"]}
 
 
+def xr_usb() -> bool:
+    """Explicit opt-in for the USB-connected development rig (see android/README.md)."""
+    return os.environ.get("BINDLAB_XR_USB") == "1"
+
+
+async def xr_adb():
+    """Return an `adb -s <xr>` runner for the registered headset. Resolves only the registered
+    XR target (never the first ADB device or the phone), verifies its SoC and restores the port
+    reverses the viewer and this hub need."""
+    workspace = ROOT.parent.parent
+    serial = json.loads((workspace / "config/devices.local.json").read_text())["xr"]["serial"]
+    adb = str(workspace / "tools/android-sdk/platform-tools/adb.exe")
+
+    async def command(*args):
+        process = await asyncio.create_subprocess_exec(
+            adb, "-s", serial, *args,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        try:
+            out, err = await asyncio.wait_for(process.communicate(), timeout=15)
+        except asyncio.TimeoutError:
+            with contextlib.suppress(ProcessLookupError):
+                process.kill()
+            await process.communicate()
+            raise RuntimeError(f"Headset command timed out: adb {' '.join(args)}")
+        output = (out + err).decode(errors="replace")
+        if process.returncode or "Error:" in output:
+            raise RuntimeError(output.strip())
+        return output
+
+    if (await command("shell", "getprop", "ro.soc.model")).strip() != XR_SOC:
+        raise RuntimeError("Registered target is not the Galaxy XR")
+    for port in sorted({*XR_REVERSE_PORTS, OWN_PORT}):
+        await command("reverse", f"tcp:{port}", f"tcp:{port}")
+    return command
+
+
+async def launch_lab_app() -> dict:
+    """Bring the headset lab app to the front over USB. Never raises: the handoff is already recorded."""
+    try:
+        command = await xr_adb()
+        # No -W: waiting for the task switch can block past the timeout while the intent still lands.
+        await command("shell", "am", "start", "-n", XR_LAB_ACTIVITY)
+        return {"launched": True}
+    except Exception as exc:
+        return {"launched": False, "launch_error": str(exc)}
+
+
+async def broadcast_protocol(run_id: str) -> None:
+    await hub.send({"type": "protocol", "run_id": run_id, "name": wf.PROTOCOL["name"],
+                    "steps": wf.PROTOCOL["steps"], "coco_to_lab": wf.PROTOCOL["coco_to_lab"],
+                    "disclaimer": wf.PROTOCOL.get("disclaimer")})
+
+
+async def enter_lab(run: dict) -> dict:
+    """SENT_TO_LAB -> LAB_ENTERED -> protocol broadcast -> STEP_1. A run already on a step is
+    left where it is; the protocol and current state are rebroadcast so clients resync."""
+    run_id = run["id"]
+    if run["state"].startswith("STEP_"):
+        await broadcast_protocol(run_id)
+        await hub.send({"type": "state", "run_id": run_id, "state": run["state"],
+                        "step_index": run["step_index"]})
+        return run
+    if run["state"] == "SENT_TO_LAB":
+        run = await set_state(run_id, "LAB_ENTERED")
+    await broadcast_protocol(run_id)
+    return await set_state(run_id, wf.step_state(0), step_index=0)
+
+
 @app.post("/lab/handoff/{run_id}")
 async def post_handoff(run_id: str):
+    """Send to lab and start the lab session in one go (the headset follows over WS / REST sync)."""
     run = load_run(run_id)
-    guard(run, "BIND_OK")
-    result = lab_handoff.send(run)
-    db.add_event(run_id, "lab_handoff", result)
-    await set_state(run_id, "SENT_TO_LAB", data_patch={"handoff": result})
-    return result
+    guard(run, "BIND_OK", "SENT_TO_LAB", "LAB_ENTERED", "STEP")
+    result: dict = {}
+    if run["state"] == "BIND_OK":
+        result = lab_handoff.send(run)
+        db.add_event(run_id, "lab_handoff", result)
+        run = await set_state(run_id, "SENT_TO_LAB", data_patch={"handoff": result})
+    run = await enter_lab(run)
+    launch = await launch_lab_app() if xr_usb() else {"launched": None}
+    return {**result, **launch, "run_id": run_id, "state": run["state"], "step_index": run["step_index"]}
 
 
 @app.post("/runs/{run_id}/open-xr")
@@ -213,33 +314,9 @@ async def open_xr(run_id: str):
     run = with_structure(load_run(run_id))
     if not run["data"].get("structure"):
         raise HTTPException(409, "This run has no structure to display")
-    # Explicit opt-in for this USB-connected development rig. Resolve only its
-    # registered XR target; never choose the first ADB device or the phone.
-    if os.environ.get("BINDLAB_XR_USB") == "1":
-        workspace = ROOT.parent.parent
+    if xr_usb():
         try:
-            serial = json.loads((workspace / "config/devices.local.json").read_text())["xr"]["serial"]
-            adb = str(workspace / "tools/android-sdk/platform-tools/adb.exe")
-
-            async def command(*args):
-                process = await asyncio.create_subprocess_exec(
-                    adb, "-s", serial, *args,
-                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-                try:
-                    out, err = await asyncio.wait_for(process.communicate(), timeout=15)
-                except asyncio.TimeoutError:
-                    process.kill()
-                    await process.communicate()
-                    raise RuntimeError("Headset command timed out")
-                output = (out + err).decode(errors="replace")
-                if process.returncode or "Error:" in output:
-                    raise RuntimeError(output.strip())
-                return output
-
-            if (await command("shell", "getprop", "ro.soc.model")).strip() != "SXR2230P":
-                raise RuntimeError("Registered target is not the Galaxy XR")
-            for port in (8000, 8080):
-                await command("reverse", f"tcp:{port}", f"tcp:{port}")
+            command = await xr_adb()
             url = "http://localhost:8080/viewer/?" + urlencode({"run": run_id, "hub": "http://localhost:8000"})
             output = await command("shell", "am", "start", "-W", "-a", "android.intent.action.VIEW",
                                   "-d", "'" + url + "'", "-p", "com.android.chrome")
@@ -257,12 +334,8 @@ async def open_xr(run_id: str):
 @app.post("/lab/enter/{run_id}")
 async def post_enter(run_id: str):
     run = load_run(run_id)
-    guard(run, "SENT_TO_LAB")
-    await set_state(run_id, "LAB_ENTERED")
-    await hub.send({"type": "protocol", "run_id": run_id, "name": wf.PROTOCOL["name"],
-                    "steps": wf.PROTOCOL["steps"], "coco_to_lab": wf.PROTOCOL["coco_to_lab"],
-                    "disclaimer": wf.PROTOCOL.get("disclaimer")})
-    run = await set_state(run_id, wf.step_state(0), step_index=0)
+    guard(run, "SENT_TO_LAB", "LAB_ENTERED", "STEP")
+    run = await enter_lab(run)
     return {"state": run["state"], "steps": wf.PROTOCOL["steps"]}
 
 
@@ -293,7 +366,7 @@ async def post_step(s: Step):
     if step is None or step["id"] != s.step_id:
         raise HTTPException(409, f"current step is {step and step['id']}, got {s.step_id}")
     try:
-        receipt = custody.append(s.run_id, wf.PROTOCOL, "StepReport", {
+        receipt = await journal(s.run_id, "StepReport", {
             "step_id": s.step_id, "client_claim": s.status,
             "detections": custody.measurements([d.model_dump() for d in s.detections]),
             **({"client_event_id": s.client_event_id} if s.client_event_id else {})},
@@ -356,12 +429,16 @@ async def review_step(run_id: str, review: StepReview):
     if not step or step["id"] != review.step_id:
         raise HTTPException(409, "out-of-order review")
     try:
-        receipt = custody.append(run_id, wf.PROTOCOL, "Review", review.model_dump())
+        receipt = await journal(run_id, "Review", review.model_dump())
     except ValueError as exc:
         raise HTTPException(409, str(exc))
     if review.accepted:
         state, idx = wf.advance_step(run["step_index"])
         run = await set_state(run_id, state, step_index=idx)
+    else:
+        # Not a transition: re-announce the current step so the headset re-arms its gate.
+        await hub.send({"type": "state", "run_id": run_id, "state": run["state"],
+                        "step_index": run["step_index"]})
     return {"state": run["state"], **receipt}
 
 

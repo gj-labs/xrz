@@ -1,14 +1,17 @@
 # Launch the BindLab XR hub for a LAN demo (phones/headsets on the same Wi-Fi).
-# Usage: .\run.ps1 [-Port 8000] [-BindHost 0.0.0.0]
+# Usage: .\run.ps1 [-Port 8011] [-BindHost 0.0.0.0] [-XrUsb]
 # --ws-max-size 8 MiB lets the headset post 6 MB JPEG snapshots over the websocket.
+# Port 8011 matches android/shared/src/main/assets/config.json. With -XrUsb the hub also
+# runs `adb reverse` for 8000/8080/$Port on the registered headset when it launches it.
 # Note: no authentication; only bind to 0.0.0.0 on a trusted demo network.
 param(
-    [int]$Port = 8000,
+    [int]$Port = 8011,
     [string]$BindHost = "0.0.0.0",
     [switch]$XrUsb
 )
 $ErrorActionPreference = "Stop"
 if ($XrUsb) { $env:BINDLAB_XR_USB = '1' }
+$env:BINDLAB_PORT = "$Port"
 Set-Location $PSScriptRoot
 $py = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $py)) {

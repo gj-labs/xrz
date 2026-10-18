@@ -227,6 +227,16 @@ def decode_photo(value):
     return data
 
 
+def accepted_reviews(run):
+    """Count of accepted Review events, read directly (unverified) for cheap UI-projection recovery."""
+    c = connect()
+    try:
+        return c.execute("SELECT COUNT(*) FROM journal WHERE run=? AND json_extract(event,'$.event_type')='Review' "
+                         "AND json_extract(event,'$.payload.accepted')=1", (run,)).fetchone()[0]
+    finally:
+        c.close()
+
+
 def export(run):
     c = connect()
     try:

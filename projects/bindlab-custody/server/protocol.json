@@ -10,7 +10,7 @@
       "forbidden": [],
       "critical": true,
       "troubleshoot": [
-        {"symptom": "Gloves not detected", "cause": "Detector cannot see PPE", "fix": "Confirm by voice: 'PPE on'"}
+        {"symptom": "Operator not detected", "cause": "Headset camera cannot see a person", "fix": "Have a colleague step into view, or say 'next' / tap Next step and confirm PPE on the phone review"}
       ]
     },
     {
